@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 export interface LoginFormData {
   email: string;
   password: string;
+  timezone: string;
 }
 const Login = () => {
   const navigate = useNavigate();
@@ -19,18 +20,36 @@ const Login = () => {
     }
   });
 
+  useEffect(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      timezone: timezone,
+    }));
+  }, []);
+
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: "",
     password: "",
+    timezone: "",
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     console.log("formData", formData);
-
-    dispatch(loginuserAsync(formData));
+    dispatch(loginuserAsync(formData)).then((res) => {
+      console.log("res", res);
+      if (res.payload.status === 200) {
+        navigate("/user-details");
+        setFormData({
+          email: "",
+          password: "",
+          timezone: "",
+        });
+      }
+    });
   };
 
   const togglePasswordVisibility = (): void => {

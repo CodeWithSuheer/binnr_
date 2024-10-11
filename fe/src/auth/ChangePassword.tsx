@@ -1,59 +1,46 @@
-import React, { useState, FormEvent, useEffect } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { changePasswordAsync, loginuserAsync } from "../features/authSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import { createuserAsync } from "../features/authSlice";
 
-export interface SignupFormData {
-  name: string;
-  email: string;
-  password: string;
-  timezone: string;
-  user_type: number;
+export interface ChangePasswordFormData {
+  old_password: string;
+  newpassword: string;
+  confirmpassword: string;
 }
-
-const Signup: React.FC = () => {
-  const dispatch = useAppDispatch();
+const ChangePassword = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
+  const { user, loginLoading } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (user?.login) {
+      navigate("/user-details");
+    }
+  });
 
   const [showPassword, setShowPassword] = useState<boolean>(false);
 
-  const { signupLoading } = useAppSelector((state) => state.auth);
-
-  useEffect(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      timezone: timezone,
-    }));
-  }, []);
-
-  const [formData, setFormData] = useState<SignupFormData>({
-    name: "",
-    email: "",
-    password: "",
-    timezone: "",
-    user_type: 2,
+  const [formData, setFormData] = useState<ChangePasswordFormData>({
+    old_password: "",
+    newpassword: "",
+    confirmpassword: "",
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    localStorage.setItem("email", formData.email);
-
-    dispatch(createuserAsync(formData)).then((res) => {
-      if (res.payload.status === 201) {
-        clearFormData();
-        navigate("/verification-screen");
+    console.log("formData", formData);
+    dispatch(changePasswordAsync(formData)).then((res) => {
+      console.log("res", res);
+      if (res.payload.status === 200) {
+        navigate("/user-details");
+        setFormData({
+          old_password: "",
+          newpassword: "",
+          confirmpassword: "",
+        });
       }
-    });
-  };
-
-  const clearFormData = () => {
-    setFormData({
-      name: "",
-      email: "",
-      password: "",
-      timezone: "",
-      user_type: 2,
     });
   };
 
@@ -67,55 +54,58 @@ const Signup: React.FC = () => {
         <div className="max-w-5xl xl:max-w-4xl mx-auto">
           <div className="flex justify-center items-center flex-col-reverse sm:flex-row gap-10 md:gap-2 min-h-[100vh]">
             {/* FORM SIDE */}
-            <div className="mt-16 min-w-[80%] md:min-w-[40%] text-center text-gray-900">
-              <h1 className="max-w-xs sm:max-w-full mb-5 text-3xl sm:text-4xl font-bold">
-                Signup Your Account
+            <div className="mt-10 min-w-[80%] md:min-w-[40%] text-center text-gray-900">
+              <h1 className="max-w-xs sm:max-w-full mb-10 text-3xl sm:text-4xl font-bold">
+                Change Password
               </h1>
 
-              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-4">
-                {/* NAME */}
+              <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+                {/* OLD PASSWORD */}
                 <div>
                   <input
-                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none  sm:text-sm rounded-md block w-full px-3 py-3"
-                    type="text"
-                    id="name"
-                    name="name"
-                    placeholder="Enter Your Name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                {/* EMAIL */}
-                <div>
-                  <input
-                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none  sm:text-sm rounded-md block w-full px-3 py-3"
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter Your Email"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    required
-                  />
-                </div>
-
-                {/* PASSWORD */}
-                <div>
-                  <input
-                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none  sm:text-sm rounded-md block w-full px-3 py-3"
+                    className="bg-gray-50 border border-gray-300 focus:border-gray-600 focus:outline-none text-gray-900 sm:text-sm rounded-md block w-full p-3"
                     type={showPassword ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    placeholder="Enter Your Password"
-                    value={formData.password}
+                    id="old_password"
+                    name="old_password"
+                    placeholder="Enter Old Password"
+                    value={formData.old_password}
                     onChange={(e) =>
-                      setFormData({ ...formData, password: e.target.value })
+                      setFormData({ ...formData, old_password: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                {/* NEW PASSWORD */}
+                <div>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none sm:text-sm rounded-md block w-full p-3"
+                    type={showPassword ? "text" : "password"}
+                    id="newpassword"
+                    name="newpassword"
+                    placeholder="Enter New Password"
+                    value={formData.newpassword}
+                    onChange={(e) =>
+                      setFormData({ ...formData, newpassword: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                {/* CONFIRM PASSWORD */}
+                <div>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none sm:text-sm rounded-md block w-full p-3"
+                    type={showPassword ? "text" : "password"}
+                    id="confirmpassword"
+                    name="confirmpassword"
+                    placeholder="Confirm New Password"
+                    value={formData.confirmpassword}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        confirmpassword: e.target.value,
+                      })
                     }
                     required
                   />
@@ -135,7 +125,7 @@ const Signup: React.FC = () => {
                     </div>
                     <div className="ml-3 text-sm">
                       <label
-                        className="text-gray-600 select-none cursor-pointer"
+                        className="text-gray-500 select-none cursor-pointer"
                         htmlFor="remember"
                       >
                         show password
@@ -144,7 +134,7 @@ const Signup: React.FC = () => {
                   </div>
                 </div>
 
-                {signupLoading ? (
+                {loginLoading ? (
                   <button
                     type="button"
                     disabled
@@ -176,20 +166,9 @@ const Signup: React.FC = () => {
                     type="submit"
                     className="w-full h-11 items-center mx-auto bg-[#252525] text-white flex justify-center tracking-wide"
                   >
-                    SIGNUP NOW
+                    CHANGE PASSWORD
                   </button>
                 )}
-
-                <p className="text-sm font-light text-gray-800">
-                  Already have an account ?{" "}
-                  <Link
-                    to="/login"
-                    onClick={() => window.scroll(0, 0)}
-                    className="font-medium text-primary-600 hover:underline"
-                  >
-                    Login
-                  </Link>
-                </p>
               </form>
             </div>
           </div>
@@ -199,4 +178,4 @@ const Signup: React.FC = () => {
   );
 };
 
-export default Signup;
+export default ChangePassword;

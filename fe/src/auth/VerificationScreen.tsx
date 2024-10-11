@@ -1,9 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../app/hooks";
+import { resendApprovalLinkAsync } from "../features/authSlice";
 
-const VerificationScreen = () => {
-  const [isResending, setIsResending] = useState(false);
+export interface VerificationScreenFormData {
+  email: string;
+}
+
+const VerificationScreen: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const email = localStorage.getItem("email");
 
@@ -13,10 +19,18 @@ const VerificationScreen = () => {
     }
   }, [email, navigate]);
 
-  const handleResend = async () => {
-    setIsResending(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsResending(false);
+  const handleResend = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    if (email) {
+      const formData: VerificationScreenFormData = { email };
+      dispatch(resendApprovalLinkAsync(formData)).then((res) => {
+        console.log("res", res);
+        // if (res.payload.success) {
+        //   navigate("/verification-screen");
+        // }
+      });
+    }
   };
 
   return (
@@ -36,16 +50,10 @@ const VerificationScreen = () => {
         <div className="flex justify-center">
           <button
             type="button"
-            className={`px-4 py-2 rounded border border-black text-black
-              ${
-                isResending
-                  ? "opacity-50 cursor-not-allowed"
-                  : "hover:bg-gray-100"
-              }`}
+            className="px-4 py-2 rounded border border-black text-black hover:bg-gray-100"
             onClick={handleResend}
-            disabled={isResending}
           >
-            {isResending ? "Resending..." : "Resend Email"}
+            Resend Email
           </button>
         </div>
       </div>

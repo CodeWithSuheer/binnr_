@@ -14,9 +14,12 @@ import Checkout from "./sections/landingPage/Checkout";
 import UserDetails from "./sections/landingPage/UserDetails";
 import useWindowWidth from "./hooks/useWindowWidth";
 import VerificationScreen from "./auth/VerificationScreen";
+import { useAppDispatch } from "./app/hooks";
+import ChangePassword from "./auth/ChangePassword";
 
 function App() {
   const [showButton, setShowButton] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,6 +46,23 @@ function App() {
 
   const windowWidth = useWindowWidth();
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (storedUser && accessToken) {
+      try {
+        // Parse the stored user data and update Redux state
+        dispatch({
+          type: "auth/loginuserAsync/fulfilled",
+          payload: JSON.parse(storedUser),
+        });
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+      }
+    }
+  }, [dispatch]);
+
   return (
     <>
       <BrowserRouter>
@@ -53,6 +73,7 @@ function App() {
 
           {/* ---------- AUTH ROUTES ---------- */}
           <Route path="/login" element={<Login />} />
+          <Route path="/change-password" element={<ChangePassword />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forget" element={<ForgetPass />} />
           <Route path="/verification-screen" element={<VerificationScreen />} />

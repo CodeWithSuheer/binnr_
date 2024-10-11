@@ -1,13 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiLock } from "react-icons/fi";
 import { GoTrash } from "react-icons/go";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
 
 const UserDetails = () => {
+  const navigate = useNavigate();
+
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  const handleShowFields = () => {
-    setShowPasswordFields(!showPasswordFields);
+  const { user } = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (!user && !storedUser) {
+      navigate("/");
+    }
+  }, [navigate, user]);
+
+  const handleChangePassword = () => {
+    navigate("/change-password");
   };
 
   const openDeleteModal = () => {
@@ -61,7 +75,7 @@ const UserDetails = () => {
                     className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
                     id="af-account-email"
                     placeholder="rollchase@gmail.com"
-                    value="rollchase@gmail.com"
+                    // value="rollchase@gmail.com"
                     type="email"
                   />
                 </div>
@@ -70,41 +84,12 @@ const UserDetails = () => {
                 <div className="sm:col-span-9">
                   <button
                     type="button"
-                    onClick={handleShowFields}
+                    onClick={handleChangePassword}
                     className="flex justify-start items-center gap-x-1 text-sm text-gray-800 font-medium cursor-pointer"
                   >
                     <FiLock /> Change Password
                   </button>
                 </div>
-
-                {/* PASSWORD */}
-                {showPasswordFields && (
-                  <>
-                    <div className="sm:col-span-3">
-                      <label
-                        className="inline-block text-sm text-gray-800 mt-2.5"
-                        htmlFor="af-account-password"
-                      >
-                        Password
-                      </label>
-                    </div>
-                    <div className="sm:col-span-9">
-                      <div className="space-y-2">
-                        <input
-                          className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
-                          id="af-account-password"
-                          placeholder="Enter current password"
-                          type="text"
-                        />
-                        <input
-                          className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
-                          placeholder="Enter new password"
-                          type="text"
-                        />
-                      </div>
-                    </div>
-                  </>
-                )}
 
                 <div className="sm:col-span-3"></div>
                 <div className="sm:col-span-9">

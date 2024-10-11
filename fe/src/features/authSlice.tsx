@@ -4,25 +4,41 @@ import toast from "react-hot-toast";
 import { SignupFormData } from "../auth/Signup";
 import { LoginFormData } from "../auth/Login";
 import { ForgetPassData } from "../auth/ForgetPass";
+import { VerificationScreenFormData } from "../auth/VerificationScreen";
+import { ChangePasswordFormData } from "../auth/ChangePassword";
 
 // API URLs
-const signupUrl = "/api/users/signup";
-const loginUrl = "/api/users/login";
-const updateUrl = "/api/users/updateUserInformation";
-const logoutUrl = "/api/users/logout";
-const forgetPassUrl = "/api/users/sendResetPasswordOTP";
+const signupUrl = "/api/auth/signup";
+const resendApprovalLinkUrl = "/api/auth/resendApprovalLink";
+const loginUrl = "/api/auth/login";
+const changePasswordUrl = "/api/auth/changepassword";
+const forgetPassUrl = "/api/auth/forgotpassword";
+
 const resetPassUrl = "/api/users/updatePassword";
 
 // Interfaces
 interface User {
   login: boolean;
-  user: {
-    name: string;
+  body: {
+    accesstoken: string;
+    approval_token: string;
+    createdAt: string;
     email: string;
-    phone: string;
-    address: string;
-    id: string;
+    image: string;
+    is_active: boolean;
+    is_approved: string;
+    is_deleted: boolean;
+    mobile: string;
+    name: string;
+    password: string;
+    status: boolean;
+    timezone: string;
+    updatedAt: string;
+    user_type: number;
+    _id: string;
   };
+  message: string;
+  status: number;
 }
 
 // CREATE ASYNC THUNK
@@ -31,6 +47,21 @@ export const createuserAsync = createAsyncThunk(
   async (formData: SignupFormData) => {
     try {
       const response = await axios.post(signupUrl, formData);
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      toast.error(error.response.data.message);
+    }
+  }
+);
+
+// RESEND APPROVAL ASYNC THUNK
+export const resendApprovalLinkAsync = createAsyncThunk(
+  "user/resendApprovalLinkAsync",
+  async (formData: VerificationScreenFormData) => {
+    try {
+      const response = await axios.post(resendApprovalLinkUrl, formData);
       toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
@@ -53,41 +84,45 @@ export const loginuserAsync = createAsyncThunk(
   }
 );
 
-// UPDATE ASYNC THUNK
-export const updateuserAsync = createAsyncThunk(
-  "user/update",
-  async (formData: any) => {
+// CHANGE PASSWORD ASYNC THUNK
+export const changePasswordAsync = createAsyncThunk(
+  "user/changePassword",
+  async (formData: ChangePasswordFormData) => {
     try {
-      const response = await axios.post(updateUrl, formData);
-      // toast.success(response.data.message);
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.put(changePasswordUrl, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("response slice", response);
+      toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
-      toast.error(error.response.data.error);
+      toast.error(error.response?.data?.error || "An error occurred.");
+      throw error;
     }
   }
 );
 
-// Logout Function
-export const logoutUserAsync = createAsyncThunk("user/logout", async () => {
-  try {
-    const response = await axios.delete(logoutUrl);
-    toast.success(response.data.message);
-    return response.data;
-  } catch (error: any) {
-    throw error;
-  }
-});
 
 // FORGET ASYNC THUNK
 export const forgetuserAsync = createAsyncThunk(
   "user/forget",
   async (formData: ForgetPassData) => {
     try {
-      const response = await axios.post(forgetPassUrl, formData);
-      // toast.success(response.data.message);
+      const response = await axios.put(forgetPassUrl, formData);
+      console.log("response slice", response);
+      toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
-      toast.error(error.response.data.error);
+      toast.error(error.response.data.message);
     }
   }
 );
@@ -154,11 +189,11 @@ const authSlice = createSlice({
         state.signupLoading = false;
       })
 
-      // UPDATE CASE
-      .addCase(updateuserAsync.pending, (state) => {
+      // CHANGE PASSWORD CASE
+      .addCase(changePasswordAsync.pending, (state) => {
         state.updateLoading = true;
       })
-      .addCase(updateuserAsync.fulfilled, (state, _action) => {
+      .addCase(changePasswordAsync.fulfilled, (state, _action) => {
         state.updateLoading = false;
       })
 
@@ -169,6 +204,9 @@ const authSlice = createSlice({
       .addCase(loginuserAsync.fulfilled, (state, action) => {
         state.loginLoading = false;
         state.user = action.payload;
+
+        localStorage.setItem("user", JSON.stringify(action.payload));
+        localStorage.setItem("accessToken", action.payload?.body?.accesstoken);
       })
 
       // FORGET PASSWORD ADD CASE
@@ -181,15 +219,6 @@ const authSlice = createSlice({
       .addCase(forgetuserAsync.rejected, (state) => {
         state.forgetLoading = false;
       })
-
-      // logout
-      .addCase(logoutUserAsync.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(logoutUserAsync.fulfilled, (state) => {
-        state.loading = false;
-        state.user = null;
-      });
   },
 });
 

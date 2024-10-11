@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import "./LandingPage.css";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { logoutUserAsync } from "../../features/authSlice";
 
 const Navbar = () => {
   // const navigate = useNavigate();
@@ -21,7 +20,6 @@ const Navbar = () => {
   const { user } = useAppSelector((state) => state.auth);
 
   const handleLogout = () => {
-    dispatch(logoutUserAsync());
     closeMenu();
   };
 

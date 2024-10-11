@@ -1,18 +1,28 @@
 import { FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
+import { forgetuserAsync } from "../features/authSlice";
+import { useAppDispatch } from "../app/hooks";
 
 export interface ForgetPassData {
   email: string;
 }
 
 const ForgetPass = () => {
+  const dispatch = useAppDispatch();
+
   const [formData, setFormData] = useState<ForgetPassData>({
     email: "",
   });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    console.log("formData", formData);
+    dispatch(forgetuserAsync(formData)).then((res: any) => {
+      if (res.payload.status === 200) {
+        setFormData({
+          email: "",
+        });
+      }
+    });
   };
 
   return (
@@ -51,9 +61,9 @@ const ForgetPass = () => {
                 </button>
 
                 <p className="text-sm font-light text-gray-900">
-                  Don’t have an account yet?{" "}
+                  Already hvae an account?{" "}
                   <Link
-                    to="/signup"
+                    to="/login"
                     onClick={() =>
                       window.scrollTo({ top: 0, behavior: "smooth" })
                     }
