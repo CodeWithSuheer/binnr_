@@ -69,7 +69,7 @@ const ForgetPass = () => {
                     }
                     className="font-medium text-primary-600 hover:underline"
                   >
-                    Sign up
+                    Login
                   </Link>
                 </p>
               </form>

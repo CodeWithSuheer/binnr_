@@ -16,6 +16,7 @@ import useWindowWidth from "./hooks/useWindowWidth";
 import VerificationScreen from "./auth/VerificationScreen";
 import { useAppDispatch } from "./app/hooks";
 import ChangePassword from "./auth/ChangePassword";
+import { getAllSubscriptionPlansAsync } from "./features/planSlice";
 
 function App() {
   const [showButton, setShowButton] = useState(false);
@@ -61,6 +62,9 @@ function App() {
         console.error("Error parsing stored user:", error);
       }
     }
+
+    // Fetch subscription plans when the app loads
+    dispatch(getAllSubscriptionPlansAsync());
   }, [dispatch]);
 
   return (

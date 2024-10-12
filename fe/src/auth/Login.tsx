@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginuserAsync } from "../features/authSlice";
+import { getUserProfileAsync, loginuserAsync } from "../features/authSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 export interface LoginFormData {
@@ -42,6 +42,13 @@ const Login = () => {
     dispatch(loginuserAsync(formData)).then((res) => {
       console.log("res", res);
       if (res.payload.status === 200) {
+        if (
+          res.payload.body.accesstoken &&
+          res.payload.body.accesstoken.length > 0
+        ) {
+          dispatch(getUserProfileAsync());
+        }
+
         navigate("/user-details");
         setFormData({
           email: "",

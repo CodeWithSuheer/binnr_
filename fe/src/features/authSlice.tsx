@@ -6,11 +6,15 @@ import { LoginFormData } from "../auth/Login";
 import { ForgetPassData } from "../auth/ForgetPass";
 import { VerificationScreenFormData } from "../auth/VerificationScreen";
 import { ChangePasswordFormData } from "../auth/ChangePassword";
+import { DeleteAccountFormData, UpdateProfileFormData } from "../sections/landingPage/UserDetails";
 
 // API URLs
 const signupUrl = "/api/auth/signup";
 const resendApprovalLinkUrl = "/api/auth/resendApprovalLink";
 const loginUrl = "/api/auth/login";
+const profileUrl = "/api/auth/profile";
+const deleteProfileUrl = "/api/auth/account";
+
 const changePasswordUrl = "/api/auth/changepassword";
 const forgetPassUrl = "/api/auth/forgotpassword";
 
@@ -84,6 +88,60 @@ export const loginuserAsync = createAsyncThunk(
   }
 );
 
+// GET USER PROFILE ASYNC THUNK
+export const getUserProfileAsync = createAsyncThunk(
+  "user/getUserProfile",
+  async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.get(profileUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // console.log("response slice", response);
+      // toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "An error occurred.");
+      throw error;
+    }
+  }
+);
+
+// UPDATE PROFILE ASYNC THUNK
+export const updateProfileAsync = createAsyncThunk(
+  "user/updateProfile",
+  async (formData: UpdateProfileFormData) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.put(profileUrl, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("response slice", response);
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "An error occurred.");
+      throw error;
+    }
+  }
+);
+
 // CHANGE PASSWORD ASYNC THUNK
 export const changePasswordAsync = createAsyncThunk(
   "user/changePassword",
@@ -111,6 +169,33 @@ export const changePasswordAsync = createAsyncThunk(
   }
 );
 
+// DELETE PROFILE ASYNC THUNK
+export const deleteProfileAsync = createAsyncThunk(
+  "user/delete",
+  async (formData: DeleteAccountFormData) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.delete(deleteProfileUrl, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: formData, 
+      });
+
+      console.log("response slice", response);
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.error || "An error occurred.");
+      throw error;
+    }
+  }
+);
 
 // FORGET ASYNC THUNK
 export const forgetuserAsync = createAsyncThunk(
@@ -148,6 +233,7 @@ export const resetPassAsync = createAsyncThunk(
 // INITIAL STATE
 interface AuthState {
   user: User | null;
+  userData: User | null;
   loading: boolean;
   signupLoading: boolean;
   loginLoading: boolean;
@@ -168,6 +254,7 @@ const initialState: AuthState = {
 
   // other states
   user: null,
+  userData: null,
   forgetPasswordEmail: null,
   resetPassword: null,
   validateToken: null,
@@ -201,12 +288,35 @@ const authSlice = createSlice({
       .addCase(loginuserAsync.pending, (state) => {
         state.loginLoading = true;
       })
-      .addCase(loginuserAsync.fulfilled, (state, action) => {
+      .addCase(loginuserAsync.fulfilled, (state,action) => {
         state.loginLoading = false;
         state.user = action.payload;
 
         localStorage.setItem("user", JSON.stringify(action.payload));
         localStorage.setItem("accessToken", action.payload?.body?.accesstoken);
+      })
+
+      // UPDATE PROFILE ADD CASE
+      .addCase(updateProfileAsync.pending, (state) => {
+        state.loginLoading = true;
+      })
+      .addCase(updateProfileAsync.fulfilled, (state, action) => {
+        state.loginLoading = false;
+        state.user = action.payload;
+
+        localStorage.setItem("user", JSON.stringify(action.payload));
+        // localStorage.setItem("accessToken", action.payload?.body?.accesstoken);
+      })
+
+      // GET USER PROFILE ADD CASE
+      .addCase(getUserProfileAsync.pending, (state) => {
+        state.loginLoading = true;
+      })
+      .addCase(getUserProfileAsync.fulfilled, (state, action) => {
+        state.loginLoading = false;
+        state.user = action.payload;
+
+        localStorage.setItem("userProfile", JSON.stringify(action.payload));
       })
 
       // FORGET PASSWORD ADD CASE
@@ -218,7 +328,7 @@ const authSlice = createSlice({
       })
       .addCase(forgetuserAsync.rejected, (state) => {
         state.forgetLoading = false;
-      })
+      });
   },
 });
 

@@ -1,6 +1,7 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
 
 const Pricing = () => {
   const navigate = useNavigate();
@@ -8,6 +9,10 @@ const Pricing = () => {
   const [activeTabIndex, setActiveTabIndex] = useState<number | null>(0);
   const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
   const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+  const { allSubPlans } = useAppSelector((state) => state.plan);
+
+  console.log("allSubPlans", allSubPlans);
 
   useEffect(() => {
     if (activeTabIndex === null) {

@@ -32,6 +32,7 @@ const LgNavbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("userProfile");
     dispatch(reset());
 
     navigate("/");
