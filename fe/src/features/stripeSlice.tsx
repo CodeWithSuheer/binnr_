@@ -2,45 +2,30 @@ import axios from "axios";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
-// API URLs
-const getAllSubscriptionPlanUrl = "/api/subscription/plan";
+const createSubscriptionPlan = "/api/subscription/";
 
-// Interface for a single subscription plan
-interface SubscriptionPlan {
-  _id: string;
-  createdBy: string;
-  name: string;
-  price: number;
-  currency: string;
-  interval: string;
-  isActive: boolean;
-  stripePlanId: string;
-  stripeProductId: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-// Interface for the API response body
-interface SubscriptionPlanResponse {
-  status: number;
-  message: string;
-  body: SubscriptionPlan[];
-}
-
-// GET ALL SUBSCRIPTION PLANS ASYNC THUNK
-export const getAllSubscriptionPlansAsync = createAsyncThunk(
-  "get/allSubPlan",
-  async () => {
+// UPDATE PROFILE ASYNC THUNK
+export const createSubscriptionPlanAsync = createAsyncThunk(
+  "stripe/subscription",
+  async (formData: any) => {
     try {
-      const response = await axios.get<SubscriptionPlanResponse>(
-        getAllSubscriptionPlanUrl
-      );
-      //   console.log("response", response);
-      //   toast.success(response.data.message);
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.post(createSubscriptionPlan, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
-      console.log(error.response.data.message);
-      toast.error(error.response.data.message);
+      toast.error(error.response?.data?.message || "An error occurred.");
+      throw error;
     }
   }
 );
@@ -48,15 +33,15 @@ export const getAllSubscriptionPlansAsync = createAsyncThunk(
 // INITIAL STATE
 interface PlanState {
   subLoading: boolean;
-  allSubPlans: SubscriptionPlan[] | null;
+  stripeResponse: any;
 }
 
 const initialState: PlanState = {
   subLoading: false,
-  allSubPlans: null,
+  stripeResponse: null,
 };
 
-const planSlice = createSlice({
+const stripeSlice = createSlice({
   name: "planSlice",
   initialState,
   reducers: {
@@ -64,25 +49,20 @@ const planSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // GET ALL SUB PLANS CASE
-      .addCase(getAllSubscriptionPlansAsync.pending, (state) => {
+      // GET CREATE SUB PLANS CASE
+      .addCase(createSubscriptionPlanAsync.pending, (state) => {
         state.subLoading = true;
       })
-      .addCase(getAllSubscriptionPlansAsync.fulfilled, (state, action) => {
+      .addCase(createSubscriptionPlanAsync.fulfilled, (state, action) => {
         state.subLoading = false;
-        state.allSubPlans = action.payload?.body || null;
-
-        localStorage.setItem(
-          "allSubPlans",
-          JSON.stringify(action.payload?.body || [])
-        );
+        state.stripeResponse = action.payload?.body || null;
       })
-      .addCase(getAllSubscriptionPlansAsync.rejected, (state) => {
+      .addCase(createSubscriptionPlanAsync.rejected, (state) => {
         state.subLoading = false;
       });
   },
 });
 
-export const { reset } = planSlice.actions;
+export const { reset } = stripeSlice.actions;
 
-export default planSlice.reducer;
+export default stripeSlice.reducer;
