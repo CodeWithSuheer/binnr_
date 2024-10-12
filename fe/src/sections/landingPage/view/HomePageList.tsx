@@ -9,6 +9,8 @@ const HomePageList = () => {
   return (
     <>
       {/* <Navbar /> */}
+
+
       <HeroSection />
       <div id="why"><SecondSection /></div>
       <div id="how"><How /></div>
