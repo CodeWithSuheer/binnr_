@@ -14,11 +14,14 @@ const Login = () => {
 
   const { user, loginLoading } = useAppSelector((state) => state.auth);
 
+  // CHECK
   useEffect(() => {
-    if (user?.login) {
-      navigate("/user-details");
+    const accessToken = localStorage.getItem("accessToken");
+
+    if (user || (accessToken && accessToken.length > 0)) {
+      navigate("/");
     }
-  });
+  }, [user, navigate]);
 
   useEffect(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -38,18 +41,25 @@ const Login = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
+
     console.log("formData", formData);
+
     dispatch(loginuserAsync(formData)).then((res) => {
-      console.log("res", res);
       if (res.payload.status === 200) {
         if (
           res.payload.body.accesstoken &&
           res.payload.body.accesstoken.length > 0
         ) {
-          dispatch(getUserProfileAsync());
-        }
+          dispatch(getUserProfileAsync()).then(() => {
+            const selectedPlanId = localStorage.getItem("selectedPlanId");
 
-        navigate("/user-details");
+            if (selectedPlanId) {
+              navigate("/checkout");
+            } else {
+              navigate("/user-details");
+            }
+          });
+        }
         setFormData({
           email: "",
           password: "",

@@ -6,7 +6,10 @@ import { LoginFormData } from "../auth/Login";
 import { ForgetPassData } from "../auth/ForgetPass";
 import { VerificationScreenFormData } from "../auth/VerificationScreen";
 import { ChangePasswordFormData } from "../auth/ChangePassword";
-import { DeleteAccountFormData, UpdateProfileFormData } from "../sections/landingPage/UserDetails";
+import {
+  DeleteAccountFormData,
+  UpdateProfileFormData,
+} from "../sections/landingPage/UserDetails";
 
 // API URLs
 const signupUrl = "/api/auth/signup";
@@ -83,7 +86,7 @@ export const loginuserAsync = createAsyncThunk(
       toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
-      toast.error(error.response.data.error);
+      toast.error(error.response.data.message);
     }
   }
 );
@@ -136,7 +139,7 @@ export const updateProfileAsync = createAsyncThunk(
       toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "An error occurred.");
+      toast.error(error.response?.data?.message || "An error occurred.");
       throw error;
     }
   }
@@ -163,7 +166,7 @@ export const changePasswordAsync = createAsyncThunk(
       toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
-      toast.error(error.response?.data?.error || "An error occurred.");
+      toast.error(error.response?.data?.message || "An error occurred.");
       throw error;
     }
   }
@@ -184,7 +187,7 @@ export const deleteProfileAsync = createAsyncThunk(
         headers: {
           Authorization: `Bearer ${token}`,
         },
-        data: formData, 
+        data: formData,
       });
 
       console.log("response slice", response);
@@ -285,15 +288,27 @@ const authSlice = createSlice({
       })
 
       // LOGIN ADD CASE
-      .addCase(loginuserAsync.pending, (state) => {
-        state.loginLoading = true;
-      })
-      .addCase(loginuserAsync.fulfilled, (state,action) => {
+      .addCase(loginuserAsync.fulfilled, (state, action) => {
         state.loginLoading = false;
-        state.user = action.payload;
 
-        localStorage.setItem("user", JSON.stringify(action.payload));
-        localStorage.setItem("accessToken", action.payload?.body?.accesstoken);
+        // Check if action.payload has the necessary properties before updating state and localStorage
+        if (
+          action.payload &&
+          action.payload.body &&
+          action.payload.body.accesstoken
+        ) {
+          state.user = action.payload;
+
+          // Store user data and access token in localStorage only if they are defined
+          localStorage.setItem("user", JSON.stringify(action.payload));
+          localStorage.setItem("accessToken", action.payload.body.accesstoken);
+        } else {
+          // Optionally, you can handle the case where login was unsuccessful or data is incomplete
+          console.warn(
+            "Login failed or received incomplete data:",
+            action.payload
+          );
+        }
       })
 
       // UPDATE PROFILE ADD CASE

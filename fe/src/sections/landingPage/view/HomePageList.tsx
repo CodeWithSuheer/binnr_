@@ -6,13 +6,10 @@ import Pricing from "../Pricing";
 import SecondSection from "../SecondSection";
 
 const HomePageList = () => {
-  
 
   return (
     <>
       {/* <Navbar /> */}
-
-
       <HeroSection />
       <div id="why">
         <SecondSection />
