@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GoTrash } from "react-icons/go";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import "./LandingPage.css";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { reset } from "../../features/authSlice";
 
 const Navbar = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [state, setState] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const navigation = [
     { title: "Why", path: "/#why" },
@@ -19,12 +21,28 @@ const Navbar = () => {
 
   const { user } = useAppSelector((state) => state.auth);
 
-  const handleLogout = () => {
-    closeMenu();
-  };
+  const storedUser = localStorage.getItem("accessToken");
+  useEffect(() => {
+    if (storedUser && storedUser.length > 0) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [user, storedUser]);
 
   const closeMenu = () => {
     setState(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("userProfile");
+    localStorage.removeItem("selectedPlanId");
+    dispatch(reset());
+
+    navigate("/");
+    closeMenu();
   };
 
   const handleLogoClick = () => {
@@ -107,12 +125,20 @@ const Navbar = () => {
                         </HashLink>
                       );
                     })}
+
+                    {isLoggedIn && (
+                      <HashLink to="/user-details" smooth>
+                        <p className="text-gray-900 my-2 py-2 pl-2" onClick={closeMenu}>
+                          Profile
+                        </p>
+                      </HashLink>
+                    )}
                   </div>
                 </div>
 
                 {/* LOGIN & LOGOUT BUTTONS */}
                 <div className="">
-                  {!user?.login ? (
+                {isLoggedIn ? (
                     <ul className="flex flex-col space-x-0 lg:space-x-4 lg:flex-row">
                       <li className="">
                         <button
