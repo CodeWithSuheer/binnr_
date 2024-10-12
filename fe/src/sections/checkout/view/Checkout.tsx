@@ -1,11 +1,17 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
+
 import { useEffect, useRef, useState } from "react";
 
-const Checkout = () => {
+import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import CardInput from "../../checkout/CardInput";
+
+const Checkout: React.FC = () => {
   const tabsRef = useRef<(HTMLElement | null)[]>([]);
   const [activeTabIndex, setActiveTabIndex] = useState<number | null>(0);
   const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
   const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+  const stripe = useStripe();
+  const elements = useElements();
 
   useEffect(() => {
     if (activeTabIndex === null) {
@@ -20,6 +26,30 @@ const Checkout = () => {
 
     setTabPosition();
   }, [activeTabIndex]);
+
+  const handleSubmitSub = async (event: any) => {
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      return;
+    }
+    console.log("stripe", stripe);
+    console.log("elements = ", elements);
+
+    const result = await stripe.createPaymentMethod({
+      type: "card",
+      card: elements.getElement(CardElement),
+      billing_details: {
+        name: "Usman",
+      },
+    });
+    console.log("Result = ", result);
+    if (result.error) {
+      console.log(result.error.message);
+    } else {
+      console.log("You got the payment method!");
+    }
+  };
 
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:h-screen lg:py-14">
@@ -126,125 +156,37 @@ const Checkout = () => {
                 />
               </div>
 
-              <div className="grid sm:col-span-2 sm:grid-cols-3 gap-2 rounded-lg p-1 w-full">
-                <button className="inline-flex items-center gap-2 rounded-md h-14 border border-gray-500 px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative">
-                  <Icon icon={"solar:card-transfer-bold"} width={25} />
-                  Card
-                </button>
-                <button className="inline-flex items-center gap-2 rounded-md h-14 border border-gray-500 px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative">
-                  <Icon icon={"fontisto:apple-pay"} width={25} />
-                  Apple Pay
-                </button>
-                <button className="inline-flex items-center gap-2 rounded-md h-14 border border-gray-500 px-4 py-2 text-sm text-gray-500 hover:text-gray-700 focus:relative">
-                  <Icon icon={"logos:paypal"} width={25} />
-                  PayPal
-                </button>
-              </div>
-
-              <div className="relative">
-                <div className="absolute mt-4 inset-y-0 end-1 hidden sm:flex items-center ps-3 pointer-events-none gap-2">
-                  <img
-                    alt="card1"
-                    className="w-8"
-                    src="https://readymadeui.com/images/visa.webp"
-                  />
-                  <img
-                    alt="card2"
-                    className="w-8"
-                    src="https://readymadeui.com/images/american-express.webp"
-                  />
-                  <img
-                    alt="card3"
-                    className="w-8"
-                    src="https://readymadeui.com/images/master.webp"
-                  />
-                  <img
-                    alt="paypalCard"
-                    className="w-8"
-                    src="src/assets/paypalCard.png"
-                  />
-                </div>
+              <div>
                 <label
-                  htmlFor="cardNumber"
+                  htmlFor="UserEmail"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Card Number
+                  Country
                 </label>
-                <input
+                <select
+                  title="countries"
+                  id="countries"
                   className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
-                  placeholder="1234 1245 1245 1232"
-                  type="text"
-                />
+                >
+                  <option selected>Choose a country</option>
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                  <option value="FR">France</option>
+                  <option value="DE">Germany</option>
+                </select>
               </div>
             </div>
-            <form className="mt-8">
-              <div className="grid sm:col-span-2 sm:grid-cols-2 gap-4">
-                <div>
-                  <label
-                    htmlFor="expirationDate"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Expiration Date
-                  </label>
-                  <input
-                    className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
-                    placeholder="MM / YY"
-                    type="text"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="UserEmail"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Security Code
-                  </label>
-                  <input
-                    className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
-                    placeholder="CVC"
-                    type="text"
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="UserEmail"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Country
-                  </label>
-                  <select
-                    title="countries"
-                    id="countries"
-                    className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
-                  >
-                    <option selected>Choose a country</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
-                  </select>
-                </div>
-                <div>
-                  <label
-                    htmlFor="UserEmail"
-                    className="block text-sm font-medium text-gray-700"
-                  >
-                    Zip code
-                  </label>
-                  <input
-                    className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
-                    placeholder="123456"
-                    type="text"
-                  />
-                </div>
-              </div>
-              <button
-                className="mt-6 w-full font-medium rounded-lg bg-[#252525] py-2.5  text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800"
-                type="submit"
-              >
-                Subscribe
-              </button>
-            </form>
+            <div className="bg-[#ffffff] py-4 my-5 rounded-lg border-[#e4e4e4] border-[.1rem] border-solid">
+              <CardInput />
+            </div>
+
+            <button
+              className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800"
+              type="submit"
+              onClick={handleSubmitSub}
+            >
+              Subscribe
+            </button>
           </div>
         </div>
       </div>

@@ -10,15 +10,23 @@ import ForgetPass from "./auth/ForgetPass";
 import { useEffect, useState } from "react";
 import { FaArrowUp } from "react-icons/fa6";
 import LgNavbar from "./sections/landingPage/LgNavbar";
-import Checkout from "./sections/landingPage/Checkout";
+import Checkout from "./sections/checkout/view/Checkout";
 import UserDetails from "./sections/landingPage/UserDetails";
 import useWindowWidth from "./hooks/useWindowWidth";
 import VerificationScreen from "./auth/VerificationScreen";
 import { useAppDispatch } from "./app/hooks";
-// import ChangePassword from "./auth/ChangePassword";
+import ChangePassword from "./auth/ChangePassword";
 import { getAllSubscriptionPlansAsync } from "./features/planSlice";
 import AnimCursor from "./components/AnimCursor";
 
+// Stripe
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+// Styles
+
+const stripePromise = loadStripe(
+  "pk_test_51Q7FG4RvECGVGam8ifUjuHReI0K8vAX1rPUAMjQPywBVS6clKj6vaAw0wTpY37cXku9WHLScFoqIXLBmXiGqSPiI00yqLfXmc9"
+);
 
 function App() {
   const [showButton, setShowButton] = useState(false);
@@ -72,8 +80,9 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
-        <AnimCursor />
+      <Elements stripe={stripePromise}>
+        <BrowserRouter>
+          <AnimCursor />
           {windowWidth >= 1024 ? <LgNavbar /> : <Navbar />}
           <Routes>
             <Route path="*" element={<NotFound />} />
@@ -83,6 +92,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forget" element={<ForgetPass />} />
+            <Route path="/change-password" element={<ChangePassword />} />
             <Route
               path="/verification-screen"
               element={<VerificationScreen />}
@@ -103,9 +113,9 @@ function App() {
               <FaArrowUp size={18} className="text-gray-100" />
             </button>
           )}
-       
-      </BrowserRouter>
-      <Toaster />
+        </BrowserRouter>
+        <Toaster />
+      </Elements>
     </>
   );
 }
