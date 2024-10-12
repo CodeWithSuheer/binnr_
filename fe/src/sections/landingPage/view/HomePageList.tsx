@@ -11,6 +11,8 @@ const HomePageList = () => {
   return (
     <>
       {/* <Navbar /> */}
+
+
       <HeroSection />
       <div id="why">
         <SecondSection />

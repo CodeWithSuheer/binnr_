@@ -15,11 +15,14 @@ import UserDetails from "./sections/landingPage/UserDetails";
 import useWindowWidth from "./hooks/useWindowWidth";
 import VerificationScreen from "./auth/VerificationScreen";
 import { useAppDispatch } from "./app/hooks";
-import ChangePassword from "./auth/ChangePassword";
+// import ChangePassword from "./auth/ChangePassword";
 import { getAllSubscriptionPlansAsync } from "./features/planSlice";
+import AnimCursor from "./components/AnimCursor";
+
 
 function App() {
   const [showButton, setShowButton] = useState(false);
+
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -70,33 +73,37 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        {windowWidth >= 1024 ? <LgNavbar /> : <Navbar />}
-        <Routes>
-          <Route path="*" element={<NotFound />} />
-          <Route path="/" element={<LandingPage />} />
+        <AnimCursor />
+          {windowWidth >= 1024 ? <LgNavbar /> : <Navbar />}
+          <Routes>
+            <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<LandingPage />} />
 
-          {/* ---------- AUTH ROUTES ---------- */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/change-password" element={<ChangePassword />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forget" element={<ForgetPass />} />
-          <Route path="/verification-screen" element={<VerificationScreen />} />
+            {/* ---------- AUTH ROUTES ---------- */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/forget" element={<ForgetPass />} />
+            <Route
+              path="/verification-screen"
+              element={<VerificationScreen />}
+            />
 
-          {/* ---------- OTHER ROUTES ---------- */}
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/user-details" element={<UserDetails />} />
-        </Routes>
+            {/* ---------- OTHER ROUTES ---------- */}
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/user-details" element={<UserDetails />} />
+          </Routes>
 
-        {showButton && (
-          <button
-            type="button"
-            aria-label="Scroll to top"
-            onClick={handleTop}
-            className="moveTop rounded-full px-3 py-3 bg-[#252525]"
-          >
-            <FaArrowUp size={18} className="text-gray-100" />
-          </button>
-        )}
+          {showButton && (
+            <button
+              type="button"
+              aria-label="Scroll to top"
+              onClick={handleTop}
+              className="moveTop rounded-full px-3 py-3 bg-[#252525]"
+            >
+              <FaArrowUp size={18} className="text-gray-100" />
+            </button>
+          )}
+       
       </BrowserRouter>
       <Toaster />
     </>

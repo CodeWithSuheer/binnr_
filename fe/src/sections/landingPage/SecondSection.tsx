@@ -9,29 +9,38 @@ const SecondSection = () => {
                 <h2 className="pb-2 max-w-xl mx-auto text-3xl md:text-5xl lg:text-5xl font-semibold bg-clip-text text-transparent bg-[linear-gradient(to_right,#b3b3b3,#808080,#333333,#808080,#333333,#808080,#b3b3b3)] bg-[length:200%_auto] animate-gradient">
                   Why We Exist
                 </h2>
-                <p className="mt-2 max-w-md text-[1.05rem] tracking-wide">
+                <p className=" font-gotham mt-2 max-w-md text-[1.05rem] tracking-wide">
                   We're a group of college students who got fed up with lugging
                   our trash across dorm buildings, only to find overflowing
                   dumpsters. It was inconvenient, messy, and, frustrating. We
-                  thought, '<span className="font-semibold">There has to be a better way</span>.
+                  thought, '
+                  <span className="font-semibold">
+                    There has to be a better way
+                  </span>
+                  .
                 </p>
-                <p className="mt-4 max-w-md text-[1.05rem] tracking-wide">
-                  So, we came up with <span className="font-semibold">Binnr</span> - a simple, door-to-door,
-                  affiliate-driven trash collection service. We're starting out
-                  as a solution for our campus, but we aim to spread this idea
-                  far beyond. <span className="font-semibold">We're making waste pickup easy, reliable, and
-                  eco-friendly, one room at a time.</span>
+                <p className=" font-gotham mt-4 max-w-md text-[1.05rem] tracking-wide">
+                  So, we came up with{" "}
+                  <span className="font-semibold">Binnr</span> - a simple,
+                  door-to-door, affiliate-driven trash collection service. We're
+                  starting out as a solution for our campus, but we aim to
+                  spread this idea far beyond.{" "}
+                  <span className="font-semibold">
+                    We're making waste pickup easy, reliable, and eco-friendly,
+                    one room at a time.
+                  </span>
                 </p>
               </div>
             </div>
-            <div className="right_side flex justify-center items-center min-w-[50%]">
-              <img
-                width="auto"
-                height="auto"
-                src="https://cdn.shopify.com/s/files/1/0704/6378/2946/files/binr_wlcm.png?v=1728131492"
-                alt="main_banner_img"
-                className="object-cover "
-              />
+            <div className=" right_side flex justify-center  items-center min-w-[50%]">
+              <div className="relative">
+                <div className="bg-gradient-to-tl opacity-70 from-[#fafafa] from-10% absolute to-transparent z-10 w-full h-full"></div>
+                <img
+                  src="/src/assets/why.png"
+                  alt="main_banner_img"
+                  className="object-cover z-0"
+                />
+              </div>
             </div>
           </div>
         </div>
