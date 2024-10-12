@@ -6,13 +6,20 @@ import Pricing from "../Pricing";
 import SecondSection from "../SecondSection";
 
 const HomePageList = () => {
+
   return (
     <>
       {/* <Navbar /> */}
       <HeroSection />
-      <div id="why"><SecondSection /></div>
-      <div id="how"><How /></div>
-      <div id="pricing"><Pricing /></div>
+      <div id="why">
+        <SecondSection />
+      </div>
+      <div id="how">
+        <How />
+      </div>
+      <div id="pricing">
+        <Pricing />
+      </div>
       <FaqSection />
       <Footer />
     </>

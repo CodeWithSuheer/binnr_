@@ -1,5 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
+@font-face {
+  font-family: "Gotham Book";
+  src: url("./fonts/GothamBook.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+p {
+  font-family: "Gotham Book", sans-serif;
+}
+
 * {
   padding: 0;
   margin: 0;
