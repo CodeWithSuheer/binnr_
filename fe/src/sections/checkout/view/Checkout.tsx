@@ -1,14 +1,41 @@
-
 import { useEffect, useRef, useState } from "react";
 
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import CardInput from "../../checkout/CardInput";
+import { useAppDispatch, useAppSelector } from "../../../app/hooks";
+import { getSubscriptionByIdAsync } from "../../../features/planSlice";
 
 const Checkout: React.FC = () => {
+  const dispatch = useAppDispatch();
+
   const tabsRef = useRef<(HTMLElement | null)[]>([]);
   const [activeTabIndex, setActiveTabIndex] = useState<number | null>(0);
   const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
   const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+  const [email, setEmail] = useState<string>("");
+
+  // Handle email change
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Email:", email);
+  };
+
+  const { planData } = useAppSelector((state) => state.plan);
+
+  console.log("planData", planData);
+
+  useEffect(() => {
+    const selectedPlanId = localStorage.getItem("selectedPlanId");
+
+    if (selectedPlanId) {
+      dispatch(getSubscriptionByIdAsync(selectedPlanId));
+    }
+  }, [dispatch]);
 
   const stripe = useStripe();
   const elements = useElements();
@@ -53,8 +80,8 @@ const Checkout: React.FC = () => {
 
   return (
     <div className="lg:flex lg:items-center lg:justify-center lg:h-screen lg:py-14">
-      <div className="pt-6 lg:pt-20 w-full max-w-5xl xl:max-w-6xl xxl:max-w-7xl mx-auto rounded-md">
-        <div className="mt-[5rem] md:mt-[5rem] lg:mt-[15rem] xl:mt-[11rem] ml-4 sm:ml-8 flew-row w-max px-3 sm:px-6 relative flex h-[3.5rem] rounded-full border bg-[#F1F1F1] shadow-lg border-[#c2c2c2] backdrop-blur-sm">
+      <div className="pt-6 lg:pt-3 w-full sm:max-w-4xl mx-auto rounded-md">
+        {/* <div className="mt-[5rem] md:mt-[5rem] lg:mt-[15rem] xl:mt-[11rem] ml-4 sm:ml-8 flew-row w-max px-3 sm:px-6 relative flex h-[3.5rem] rounded-full border bg-[#F1F1F1] shadow-lg border-[#c2c2c2] backdrop-blur-sm">
           <span
             className="absolute bottom-0 top-0 -z-10 flex overflow-hidden rounded-full py-2 transition-all duration-300"
             style={{ left: tabUnderlineLeft, width: tabUnderlineWidth }}
@@ -78,18 +105,21 @@ const Checkout: React.FC = () => {
               </button>
             );
           })}
-        </div>
+        </div> */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mt-7">
-          <div className="lg:col-span-2 text-gray-600 flex flex-col h-[100%]  rounded-xl p-4 sm:p-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 ">
+          <div className="lg:col-span-3 text-gray-100 bg-gradient-to-b from-[#2C5364] via-[#203A43] to-[#0F2027] flex flex-col h-[100%]  rounded-xl p-4 sm:px-5 sm:py-8">
             <div className="flex flex-col justify-center items-start">
-              <p className="text-sm font-semibold">{"Try Pro Plan"}</p>
-              <p className="font-extrabold my-2 text-4xl text-gray-900">
-                {"14 Days Free"}
+              {/* <p className="text-sm font-semibold capitalize">{planData?.interval}</p> */}
+              <p className="font-extrabold my-2 text-4xl text-gray-100">
+                {planData?.name}
               </p>
-              <p className="text-sm font-semibold">{"Then $10/month"}</p>
+              <p className="text-sm font-semibold upper">
+                {planData?.currency === "usd" ? "$" : planData?.currency}
+                {planData?.price}/{planData?.interval}
+              </p>
             </div>
-            <div className="flex flex-row justify-between items-center ">
+            {/* <div className="flex flex-row justify-between items-center ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Pro Plan"}
               </p>
@@ -97,12 +127,12 @@ const Checkout: React.FC = () => {
                 <p className="font-lighter  text-sm ">{"14 Days Free"}</p>
                 <p className="text-sm font-lighter mt-1">{"$10/month after"}</p>
               </div>
-            </div>
-            <span className="relative flex justify-center my-5">
+            </div> */}
+            {/* <span className="relative flex justify-center my-5">
               <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
               <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
-            </span>
-            <div className="flex flex-row justify-between items-start ">
+            </span> */}
+            {/* <div className="flex flex-row justify-between items-start ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Subtotal"}
               </p>
@@ -119,27 +149,29 @@ const Checkout: React.FC = () => {
               <p className="text-[1rem] font-lighter text-black">{"Tax"}</p>
 
               <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
-            </div>
-            <span className="relative flex justify-center my-5">
-              <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
-              <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
-            </span>
-            <div className="mt-2 flex flex-row justify-between items-start ">
+            </div> */}
+            {/* <div className="mt-2 flex flex-row justify-between items-start ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Total after trial"}
               </p>
 
               <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
-            </div>{" "}
-            <div className="mt-2 flex flex-row justify-between items-start ">
+            </div> */}{" "}
+            {/* <div className="mt-2 flex flex-row justify-between items-start ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Total due today"}
               </p>
 
               <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
-            </div>
+            </div> */}
           </div>
-          <div className="lg:col-span-3 p-4 sm:p-8">
+
+          <span className="relative flex justify-center my-2 lg:col-span-3">
+            <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
+            <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
+          </span>
+
+          <div className="lg:col-span-3 p-4 sm:p-3">
             <div className="grid gap-4 sm:grid-cols-1 mt-4">
               <div>
                 <label
@@ -152,11 +184,14 @@ const Checkout: React.FC = () => {
                 <input
                   className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
                   placeholder="Email"
-                  type="text"
+                  type="email"
+                  required
+                  value={email}
+                  onChange={handleEmailChange}
                 />
               </div>
 
-              <div>
+              {/* <div>
                 <label
                   htmlFor="UserEmail"
                   className="block text-sm font-medium text-gray-700"
@@ -174,7 +209,7 @@ const Checkout: React.FC = () => {
                   <option value="FR">France</option>
                   <option value="DE">Germany</option>
                 </select>
-              </div>
+              </div> */}
             </div>
             <div className="bg-[#ffffff] py-4 my-5 rounded-lg border-[#e4e4e4] border-[.1rem] border-solid">
               <CardInput />
@@ -196,17 +231,17 @@ const Checkout: React.FC = () => {
 
 export default Checkout;
 
-let allTabs = [
-  {
-    id: "weekly",
-    name: "Weekly",
-  },
-  {
-    id: "monthly",
-    name: "Monthly",
-  },
-  {
-    id: "yearly",
-    name: "Yearly",
-  },
-];
+// let allTabs = [
+//   {
+//     id: "weekly",
+//     name: "Weekly",
+//   },
+//   {
+//     id: "monthly",
+//     name: "Monthly",
+//   },
+//   {
+//     id: "yearly",
+//     name: "Yearly",
+//   },
+// ];

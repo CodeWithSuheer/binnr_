@@ -45,15 +45,50 @@ export const getAllSubscriptionPlansAsync = createAsyncThunk(
   }
 );
 
+
+
+// GET SUBSCRIPTION PLANS BY ID ASYNC THUNK
+export const getSubscriptionByIdAsync = createAsyncThunk(
+  "get/planById",
+  async (id:string) => {
+    try {
+
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.get(`${getAllSubscriptionPlanUrl}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+
+      // const response = await axios.get(`${getAllSubscriptionPlanUrl}/${id}`);
+
+      // console.log("response", response);
+      // toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      toast.error(error.response.data.message);
+    }
+  }
+);
+
 // INITIAL STATE
 interface PlanState {
   subLoading: boolean;
   allSubPlans: SubscriptionPlan[] | null;
+  planData: null;
 }
 
 const initialState: PlanState = {
   subLoading: false,
   allSubPlans: null,
+  planData: null,
 };
 
 const planSlice = createSlice({
@@ -78,6 +113,20 @@ const planSlice = createSlice({
         );
       })
       .addCase(getAllSubscriptionPlansAsync.rejected, (state) => {
+        state.subLoading = false;
+      })
+
+
+      // GET SUB PLAN BY ID CASE
+      .addCase(getSubscriptionByIdAsync.pending, (state) => {
+        state.subLoading = true;
+      })
+      .addCase(getSubscriptionByIdAsync.fulfilled, (state, action) => {
+        state.subLoading = false;
+        state.planData = action.payload?.body || null;
+
+      })
+      .addCase(getSubscriptionByIdAsync.rejected, (state) => {
         state.subLoading = false;
       });
   },
