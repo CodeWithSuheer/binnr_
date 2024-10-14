@@ -17,7 +17,7 @@ export interface UpdateProfileFormData {
   name?: string;
 }
 
-const UserDetails = () => {
+const AdminDetails = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -294,4 +294,4 @@ const UserDetails = () => {
   );
 };
 
-export default UserDetails;
+export default AdminDetails;

@@ -82,7 +82,7 @@ export const getSubscriptionByIdAsync = createAsyncThunk(
 interface PlanState {
   subLoading: boolean;
   allSubPlans: SubscriptionPlan[] | null;
-  planData: null;
+  planData: SubscriptionPlan | null; // Should hold a single SubscriptionPlan or null
 }
 
 const initialState: PlanState = {
@@ -90,6 +90,7 @@ const initialState: PlanState = {
   allSubPlans: null,
   planData: null,
 };
+
 
 const planSlice = createSlice({
   name: "planSlice",
@@ -123,7 +124,7 @@ const planSlice = createSlice({
       })
       .addCase(getSubscriptionByIdAsync.fulfilled, (state, action) => {
         state.subLoading = false;
-        state.planData = action.payload?.body || null;
+        state.planData = action.payload?.body || null; 
 
       })
       .addCase(getSubscriptionByIdAsync.rejected, (state) => {

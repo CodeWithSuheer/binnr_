@@ -4,7 +4,8 @@ import toast from "react-hot-toast";
 
 const createSubscriptionPlan = "/api/subscription/";
 
-// UPDATE PROFILE ASYNC THUNK
+
+// CREATE SUBSCRIPTION ASYNC THUNK
 export const createSubscriptionPlanAsync = createAsyncThunk(
   "stripe/subscription",
   async (formData: any) => {
@@ -32,12 +33,12 @@ export const createSubscriptionPlanAsync = createAsyncThunk(
 
 // INITIAL STATE
 interface PlanState {
-  subLoading: boolean;
+  stripeLoading: boolean;
   stripeResponse: any;
 }
 
 const initialState: PlanState = {
-  subLoading: false,
+  stripeLoading: false,
   stripeResponse: null,
 };
 
@@ -51,14 +52,14 @@ const stripeSlice = createSlice({
     builder
       // GET CREATE SUB PLANS CASE
       .addCase(createSubscriptionPlanAsync.pending, (state) => {
-        state.subLoading = true;
+        state.stripeLoading = true;
       })
       .addCase(createSubscriptionPlanAsync.fulfilled, (state, action) => {
-        state.subLoading = false;
+        state.stripeLoading = false;
         state.stripeResponse = action.payload?.body || null;
       })
       .addCase(createSubscriptionPlanAsync.rejected, (state) => {
-        state.subLoading = false;
+        state.stripeLoading = false;
       });
   },
 });

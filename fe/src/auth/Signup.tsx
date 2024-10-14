@@ -7,6 +7,9 @@ export interface SignupFormData {
   name: string;
   email: string;
   password: string;
+  building: string;
+  floor: string;
+  room_number: string;
   timezone: string;
   user_type: number;
 }
@@ -31,6 +34,9 @@ const Signup: React.FC = () => {
     name: "",
     email: "",
     password: "",
+    building: "",
+    floor: "",
+    room_number: "",
     timezone: "",
     user_type: 2,
   });
@@ -39,6 +45,8 @@ const Signup: React.FC = () => {
     e.preventDefault();
     localStorage.setItem("email", formData.email);
 
+    console.log("formData", formData);
+    
     dispatch(createuserAsync(formData)).then((res) => {
       if (res.payload.status === 201) {
         clearFormData();
@@ -52,6 +60,9 @@ const Signup: React.FC = () => {
       name: "",
       email: "",
       password: "",
+      building: "",
+      floor: "",
+      room_number: "",
       timezone: "",
       user_type: 2,
     });
@@ -116,6 +127,54 @@ const Signup: React.FC = () => {
                     value={formData.password}
                     onChange={(e) =>
                       setFormData({ ...formData, password: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                {/* BUILDING */}
+                <div>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none  sm:text-sm rounded-md block w-full px-3 py-3"
+                    type="text"
+                    id="building"
+                    name="building"
+                    placeholder="Enter Building Name"
+                    value={formData.building}
+                    onChange={(e) =>
+                      setFormData({ ...formData, building: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                {/* FLOOR NUMBER */}
+                <div>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none  sm:text-sm rounded-md block w-full px-3 py-3"
+                    type="text"
+                    id="floor"
+                    name="floor"
+                    placeholder="Enter Floor Number"
+                    value={formData.floor}
+                    onChange={(e) =>
+                      setFormData({ ...formData, floor: e.target.value })
+                    }
+                    required
+                  />
+                </div>
+
+                {/* NAME */}
+                <div>
+                  <input
+                    className="bg-gray-50 border border-gray-300 text-gray-900 focus:border-gray-600 focus:outline-none  sm:text-sm rounded-md block w-full px-3 py-3"
+                    type="text"
+                    id="room_number"
+                    name="room_number"
+                    placeholder="Enter Room Number"
+                    value={formData.room_number}
+                    onChange={(e) =>
+                      setFormData({ ...formData, room_number: e.target.value })
                     }
                     required
                   />

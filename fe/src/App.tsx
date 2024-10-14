@@ -22,6 +22,7 @@ import AnimCursor from "./components/AnimCursor";
 // Stripe
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import AdminDetails from "./sections/landingPage/AdminDetails";
 // Styles
 
 const stripePromise = loadStripe(
@@ -101,6 +102,7 @@ function App() {
             {/* ---------- OTHER ROUTES ---------- */}
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/user-details" element={<UserDetails />} />
+            <Route path="/admin-details" element={<AdminDetails />} />
           </Routes>
 
           {showButton && (

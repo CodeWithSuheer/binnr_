@@ -12,7 +12,7 @@ const ChangePassword = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const { user, loginLoading } = useAppSelector((state) => state.auth);
+  const { user, changePassLoading } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (user?.login) {
@@ -134,7 +134,7 @@ const ChangePassword = () => {
                   </div>
                 </div>
 
-                {loginLoading ? (
+                {changePassLoading ? (
                   <button
                     type="button"
                     disabled

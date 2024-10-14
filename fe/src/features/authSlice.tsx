@@ -241,6 +241,7 @@ interface AuthState {
   signupLoading: boolean;
   loginLoading: boolean;
   forgetLoading: boolean;
+  changePassLoading: boolean;
   updateLoading: boolean;
   forgetPasswordEmail: string | null;
   resetPassword: string | null;
@@ -254,6 +255,7 @@ const initialState: AuthState = {
   loginLoading: false,
   forgetLoading: false,
   updateLoading: false,
+  changePassLoading: false,
 
   // other states
   user: null,
@@ -281,13 +283,17 @@ const authSlice = createSlice({
 
       // CHANGE PASSWORD CASE
       .addCase(changePasswordAsync.pending, (state) => {
-        state.updateLoading = true;
+        state.changePassLoading = true;
       })
       .addCase(changePasswordAsync.fulfilled, (state, _action) => {
-        state.updateLoading = false;
+        state.changePassLoading = false;
       })
 
       // LOGIN ADD CASE
+      .addCase(loginuserAsync.pending, (state) => {
+        state.loginLoading = true;
+      })
+
       .addCase(loginuserAsync.fulfilled, (state, action) => {
         state.loginLoading = false;
 

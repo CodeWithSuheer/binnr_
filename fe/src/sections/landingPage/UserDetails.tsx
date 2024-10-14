@@ -44,14 +44,6 @@ const UserDetails = () => {
 
   const displayUser = user || localUser;
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-
-    if (!user && !storedUser) {
-      navigate("/");
-    }
-  }, [navigate, user]);
-
   const handleChangePassword = () => {
     navigate("/change-password");
   };
@@ -102,7 +94,7 @@ const UserDetails = () => {
       console.log(updatedFields);
       dispatch(updateProfileAsync(updatedFields)).then((res) => {
         if (res.payload.status === 200) {
-            // dispatch(getUserProfileAsync());
+          // dispatch(getUserProfileAsync());
         }
         console.log("res", res);
         setShowProfileModal(false);

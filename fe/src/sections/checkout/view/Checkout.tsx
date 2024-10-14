@@ -1,17 +1,28 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  //  useRef,
+  useState,
+} from "react";
 
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import CardInput from "../../checkout/CardInput";
 import { useAppDispatch, useAppSelector } from "../../../app/hooks";
 import { getSubscriptionByIdAsync } from "../../../features/planSlice";
+import { createSubscriptionPlanAsync } from "../../../features/stripeSlice";
+import { useNavigate } from "react-router-dom";
 
 const Checkout: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
 
-  const tabsRef = useRef<(HTMLElement | null)[]>([]);
-  const [activeTabIndex, setActiveTabIndex] = useState<number | null>(0);
-  const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
-  const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+  const [localUser, setLocalUser] = useState(null);
+
+  // const tabsRef = useRef<(HTMLElement | null)[]>([]);
+  // const [activeTabIndex, setActiveTabIndex] = useState<number | null>(0);
+  // const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
+  // const [tabUnderlineLeft, setTabUnderlineLeft] = useState(0);
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [email, setEmail] = useState<string>("");
 
@@ -20,14 +31,20 @@ const Checkout: React.FC = () => {
     setEmail(e.target.value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Email:", email);
-  };
-
   const { planData } = useAppSelector((state) => state.plan);
+  const { user } = useAppSelector((state) => state.auth);
 
-  console.log("planData", planData);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (!user && storedUser) {
+      setLocalUser(JSON.parse(storedUser));
+    } else if (!user && !storedUser) {
+      navigate("/");
+    }
+  }, [navigate, user]);
+
+  const displayUser = user || localUser;
 
   useEffect(() => {
     const selectedPlanId = localStorage.getItem("selectedPlanId");
@@ -40,46 +57,118 @@ const Checkout: React.FC = () => {
   const stripe = useStripe();
   const elements = useElements();
 
-  useEffect(() => {
-    if (activeTabIndex === null) {
-      return;
-    }
+  // useEffect(() => {
+  //   if (activeTabIndex === null) {
+  //     return;
+  //   }
 
-    const setTabPosition = () => {
-      const currentTab = tabsRef.current[activeTabIndex] as HTMLElement;
-      setTabUnderlineLeft(currentTab?.offsetLeft ?? 0);
-      setTabUnderlineWidth(currentTab?.clientWidth ?? 0);
-    };
+  //   const setTabPosition = () => {
+  //     const currentTab = tabsRef.current[activeTabIndex] as HTMLElement;
+  //     setTabUnderlineLeft(currentTab?.offsetLeft ?? 0);
+  //     setTabUnderlineWidth(currentTab?.clientWidth ?? 0);
+  //   };
 
-    setTabPosition();
-  }, [activeTabIndex]);
+  //   setTabPosition();
+  // }, [activeTabIndex]);
 
-  const handleSubmitSub = async (event: any) => {
+  // HANDLE SUBMIT SUB
+
+  // const handleSubmitSub = async (event: any) => {
+  //   event.preventDefault();
+
+  //   setIsLoading(true);
+
+  //   const selectedPlanId = localStorage.getItem("selectedPlanId");
+
+  //   if (!stripe || !elements) {
+  //     return;
+  //   }
+  //   console.log("stripe", stripe);
+  //   console.log("elements = ", elements);
+
+  //   const result = await stripe.createPaymentMethod({
+  //     type: "card",
+  //     card: elements.getElement(CardElement),
+  //     billing_details: {
+  //       name: displayUser?.body?.name,
+  //       email: displayUser?.body?.email,
+  //     },
+  //   });
+
+  //   console.log("Result = ", result);
+  //   console.log("id = ", result?.paymentMethod?.id);
+
+  //   const formdata = {
+  //     planId: selectedPlanId,
+  //     paymentMethodId: result?.paymentMethod?.id,
+  //   };
+
+  //   if (result?.paymentMethod?.id && selectedPlanId) {
+  //     dispatch(createSubscriptionPlanAsync(formdata)).then((res) => {
+  //       console.log("res", res);
+  //     });
+  //   }
+  //   if (result.error) {
+  //     setIsLoading(false);
+  //     console.log(result.error.message);
+  //   } else {
+  //     setIsLoading(false);
+  //     console.log("You got the payment method!");
+  //   }
+  // };
+
+  const handleSubmitSub = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsLoading(true);
+
+    const selectedPlanId = localStorage.getItem("selectedPlanId");
 
     if (!stripe || !elements) {
+      setIsLoading(false);
       return;
     }
-    console.log("stripe", stripe);
-    console.log("elements = ", elements);
 
-    const result = await stripe.createPaymentMethod({
-      type: "card",
-      card: elements.getElement(CardElement),
-      billing_details: {
-        name: "Usman",
-      },
-    });
-    console.log("Result = ", result);
-    if (result.error) {
-      console.log(result.error.message);
-    } else {
-      console.log("You got the payment method!");
+    const cardElement = elements.getElement(CardElement);
+    if (!cardElement) {
+      setIsLoading(false);
+      console.error("CardElement not found");
+      return;
+    }
+
+    try {
+      const result = await stripe.createPaymentMethod({
+        type: "card",
+        card: cardElement,
+        billing_details: {
+          name: displayUser?.body?.name,
+          email: displayUser?.body?.email,
+        },
+      });
+
+      if (result.error) {
+        console.error(result.error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      const formData = {
+        planId: selectedPlanId,
+        paymentMethodId: result?.paymentMethod?.id,
+      };
+
+      if (result?.paymentMethod?.id && selectedPlanId) {
+        await dispatch(createSubscriptionPlanAsync(formData));
+      }
+      console.log("Payment method successfully created:", result);
+    } catch (error) {
+      console.error("Error creating payment method:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="lg:flex lg:items-center lg:justify-center lg:h-screen lg:py-14">
+    <div className="flex items-center justify-center min-h-screen px-2">
       <div className="pt-6 lg:pt-3 w-full sm:max-w-4xl mx-auto rounded-md">
         {/* <div className="mt-[5rem] md:mt-[5rem] lg:mt-[15rem] xl:mt-[11rem] ml-4 sm:ml-8 flew-row w-max px-3 sm:px-6 relative flex h-[3.5rem] rounded-full border bg-[#F1F1F1] shadow-lg border-[#c2c2c2] backdrop-blur-sm">
           <span
@@ -107,17 +196,22 @@ const Checkout: React.FC = () => {
           })}
         </div> */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-2 ">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-3 text-gray-100 bg-gradient-to-b from-[#2C5364] via-[#203A43] to-[#0F2027] flex flex-col h-[100%]  rounded-xl p-4 sm:px-5 sm:py-8">
             <div className="flex flex-col justify-center items-start">
-              {/* <p className="text-sm font-semibold capitalize">{planData?.interval}</p> */}
-              <p className="font-extrabold my-2 text-4xl text-gray-100">
-                {planData?.name}
-              </p>
-              <p className="text-sm font-semibold upper">
-                {planData?.currency === "usd" ? "$" : planData?.currency}
-                {planData?.price}/{planData?.interval}
-              </p>
+              {planData ? (
+                <>
+                  <p className="font-extrabold my-2 text-3xl sm:text-4xl text-gray-100">
+                    {planData.name}
+                  </p>
+                  <p className="text-sm font-semibold uppercase">
+                    {planData.currency}
+                    {planData.price}/{planData.interval}
+                  </p>
+                </>
+              ) : (
+                <p>Loading subscription plan details...</p>
+              )}
             </div>
             {/* <div className="flex flex-row justify-between items-center ">
               <p className="text-[1rem] font-lighter text-black">
@@ -215,13 +309,22 @@ const Checkout: React.FC = () => {
               <CardInput />
             </div>
 
-            <button
-              className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800"
-              type="submit"
-              onClick={handleSubmitSub}
-            >
-              Subscribe
-            </button>
+            {isLoading ? (
+              <button
+                className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800 cursor-not-allowed"
+                type="button"
+              >
+                Loading
+              </button>
+            ) : (
+              <button
+                className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800"
+                type="submit"
+                onClick={handleSubmitSub}
+              >
+                Subscribe
+              </button>
+            )}
           </div>
         </div>
       </div>
