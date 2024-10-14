@@ -126,93 +126,188 @@ const AdminDetails = () => {
 
   return (
     <>
-      <section className="relative">
-        <div className="max-w-3xl px-4 pt-24 py-8 sm:px-6 lg:px-8 mx-auto">
-          <div className="p-0 sm:p-7">
-            <div className="mb-8">
-              <h2 className="text-xl font-bold text-gray-800">Account</h2>
-              <p className="mt-2 text-sm text-gray-600">
-                Manage your email, password and account settings.
-              </p>
+     <section className="relative">
+        <div className="flex justify-center items-center h-screen max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-10 lg:gap-8 w-full">
+            <div className="col-span-3 border-e">
+              <div className="px-4 py-6">
+                <ul className="mt-6 space-y-1">
+                  <li>
+                    <a
+                      href="#"
+                      className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
+                    >
+                      Profile
+                    </a>
+                  </li>
+
+                  <li>
+                    <a
+                      href="#"
+                      className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                      Subscriptions
+                    </a>
+                  </li>
+
+                  <li>
+                    <a
+                      href="#"
+                      className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    >
+                      Users
+                    </a>
+                  </li>
+
+                  {/* <li>
+                    <details className="group [&_summary::-webkit-details-marker]:hidden">
+                      <summary className="flex cursor-pointer items-center justify-between rounded-lg px-4 py-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700">
+                        <span className="text-sm font-medium"> Account </span>
+
+                        <span className="shrink-0 transition duration-300 group-open:-rotate-180">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="size-5"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                        </span>
+                      </summary>
+
+                      <ul className="mt-2 space-y-1 px-4">
+                        <li>
+                          <a
+                            href="#"
+                            className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                          >
+                            Details
+                          </a>
+                        </li>
+
+                        <li>
+                          <a
+                            href="#"
+                            className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                          >
+                            Security
+                          </a>
+                        </li>
+
+                        <li>
+                          <form action="#">
+                            <button
+                              type="submit"
+                              className="w-full rounded-lg px-4 py-2 text-sm font-medium text-gray-500 [text-align:_inherit] hover:bg-gray-100 hover:text-gray-700"
+                            >
+                              Logout
+                            </button>
+                          </form>
+                        </li>
+                      </ul>
+                    </details>
+                  </li> */}
+                </ul>
+              </div>
             </div>
-            <form>
-              <div className="grid sm:grid-cols-12 gap-2 sm:gap-6">
-                <div className="sm:col-span-3 flex items-center">
-                  <label className="inline-block text-sm text-gray-800">
-                    Username
-                  </label>
+            <div className="col-span-7 ">
+              <div className="p-0 sm:p-7">
+                <div className="mb-8">
+                  <h2 className="text-xl font-bold text-gray-800">Account</h2>
+                  <p className="mt-2 text-sm text-gray-600">
+                    Manage your email, password and account settings.
+                  </p>
                 </div>
-                <div className="sm:col-span-9">
-                  <input
-                    className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
-                    id="name"
-                    placeholder="Username"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                <form>
+                  <div className="grid sm:grid-cols-12 gap-2 sm:gap-6">
+                    <div className="sm:col-span-3 flex items-center">
+                      <label className="inline-block text-sm text-gray-800">
+                        Username
+                      </label>
+                    </div>
+                    <div className="sm:col-span-9">
+                      <input
+                        className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
+                        id="name"
+                        placeholder="Username"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
-                {/* EMAIL */}
-                <div className="sm:col-span-3">
-                  <label
-                    className="inline-block text-sm text-gray-800 mt-2.5"
-                    htmlFor="af-account-email"
-                  >
-                    Email
-                  </label>
-                </div>
-                <div className="sm:col-span-9">
-                  <input
-                    className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
-                    id="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                    {/* EMAIL */}
+                    <div className="sm:col-span-3">
+                      <label
+                        className="inline-block text-sm text-gray-800 mt-2.5"
+                        htmlFor="af-account-email"
+                      >
+                        Email
+                      </label>
+                    </div>
+                    <div className="sm:col-span-9">
+                      <input
+                        className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
+                        id="email"
+                        placeholder="Email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                      />
+                    </div>
 
-                <div className="sm:col-span-3"></div>
-                <div className="sm:col-span-9">
-                  <button
-                    type="button"
-                    onClick={handleChangePassword}
-                    className="flex justify-start items-center gap-x-1 text-sm text-gray-800 font-medium cursor-pointer"
-                  >
-                    <FiLock /> Change Password
-                  </button>
-                </div>
+                    <div className="sm:col-span-3"></div>
+                    <div className="sm:col-span-9">
+                      <button
+                        type="button"
+                        onClick={handleChangePassword}
+                        className="flex justify-start items-center gap-x-1 text-sm text-gray-800 font-medium cursor-pointer"
+                      >
+                        <FiLock /> Change Password
+                      </button>
+                    </div>
 
-                <div className="sm:col-span-3"></div>
-                <div className="sm:col-span-9">
-                  <button
-                    type="button"
-                    onClick={openDeleteModal}
-                    className="flex justify-start items-center gap-x-1 text-sm text-red-600 font-medium cursor-pointer"
-                  >
-                    <GoTrash /> Delete Account
-                  </button>
-                </div>
+                    <div className="sm:col-span-3"></div>
+                    <div className="sm:col-span-9">
+                      <button
+                        type="button"
+                        onClick={openDeleteModal}
+                        className="flex justify-start items-center gap-x-1 text-sm text-red-600 font-medium cursor-pointer"
+                      >
+                        <GoTrash /> Delete Account
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* BUTTONS */}
+                  <div className="mt-10 flex justify-end gap-x-2">
+                    <button
+                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50"
+                      type="button"
+                      onClick={() =>
+                        setFormData({
+                          name: displayUser?.body?.name,
+                          email: displayUser?.body?.email,
+                        })
+                      }
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none"
+                      type="button"
+                      disabled={!isChanged} // Disable if no changes
+                      onClick={handleSaveChanges}
+                    >
+                      Save changes
+                    </button>
+                  </div>
+                </form>
               </div>
-
-              {/* BUTTONS */}
-              <div className="mt-10 flex justify-end gap-x-2">
-                <button
-                  className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-gray-200 bg-white text-gray-800 shadow-sm hover:bg-gray-50 disabled:opacity-50 disabled:pointer-events-none focus:outline-none focus:bg-gray-50"
-                  type="button"
-                  onClick={() => setFormData({ name: displayUser?.body?.name, email: displayUser?.body?.email })}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="py-2 px-3 inline-flex items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-gray-800 text-white hover:bg-gray-700 disabled:opacity-50 disabled:pointer-events-none"
-                  type="button"
-                  disabled={!isChanged} // Disable if no changes
-                  onClick={handleSaveChanges}
-                >
-                  Save changes
-                </button>
-              </div>
-            </form>
+            </div>
           </div>
         </div>
       </section>
