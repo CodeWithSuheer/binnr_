@@ -15,7 +15,7 @@ import UserDetails from "./sections/landingPage/UserDetails";
 import useWindowWidth from "./hooks/useWindowWidth";
 import VerificationScreen from "./auth/VerificationScreen";
 import { useAppDispatch } from "./app/hooks";
-import ChangePassword from "./auth/ChangePassword";
+// import ChangePassword from "./auth/ChangePassword";
 import { getAllSubscriptionPlansAsync } from "./features/planSlice";
 import AnimCursor from "./components/AnimCursor";
 
@@ -23,6 +23,7 @@ import AnimCursor from "./components/AnimCursor";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import AdminDetails from "./sections/landingPage/AdminDetails";
+import Subscriptions from "./sections/landingPage/SubscriptionsList";
 // Styles
 
 const stripePromise = loadStripe(
@@ -93,7 +94,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/forget" element={<ForgetPass />} />
-            <Route path="/change-password" element={<ChangePassword />} />
+            {/* <Route path="/change-password" element={<ChangePassword />} /> */}
             <Route
               path="/verification-screen"
               element={<VerificationScreen />}
@@ -103,6 +104,7 @@ function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/user-details" element={<UserDetails />} />
             <Route path="/admin-details" element={<AdminDetails />} />
+            <Route path="/subscriptions" element={<Subscriptions />} />
           </Routes>
 
           {showButton && (

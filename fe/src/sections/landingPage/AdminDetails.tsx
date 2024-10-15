@@ -8,6 +8,9 @@ import {
   reset,
   updateProfileAsync,
 } from "../../features/authSlice";
+import ChangePasswordModal from "../../auth/ChangePasswordModal";
+import { getAllSubscriptionPlanAsync } from "../../features/stripeSlice";
+import { Link } from "react-router-dom";
 
 export interface DeleteAccountFormData {
   email: string;
@@ -23,6 +26,7 @@ const AdminDetails = () => {
 
   const [localUser, setLocalUser] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState<UpdateProfileFormData>({
@@ -32,6 +36,11 @@ const AdminDetails = () => {
   const [isChanged, setIsChanged] = useState(false);
 
   const { user } = useAppSelector((state) => state.auth);
+
+
+  useEffect(() => {
+    dispatch(getAllSubscriptionPlanAsync());
+  }, [dispatch]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -72,6 +81,14 @@ const AdminDetails = () => {
     }
   };
 
+  const openChangePasswordModal = () => {
+    setShowChangePasswordModal(true);
+  };
+
+  const closeChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
+  };
+
   const handleSaveChanges = () => {
     const updatedFields: UpdateProfileFormData = {};
 
@@ -92,10 +109,6 @@ const AdminDetails = () => {
     }
 
     setIsChanged(false); // Disable the save button after update
-  };
-
-  const handleChangePassword = () => {
-    navigate("/change-password");
   };
 
   const openDeleteModal = () => {
@@ -126,37 +139,28 @@ const AdminDetails = () => {
 
   return (
     <>
-     <section className="relative">
-        <div className="flex justify-center items-center h-screen max-w-7xl mx-auto">
+      <section className="relative">
+        <div className="flex justify-center items-center h-screen max-w-6xl mx-auto">
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-10 lg:gap-8 w-full">
-            <div className="col-span-3 border-e">
+            <div className="col-span-1 lg:col-span-3 border-b md:border-e">
               <div className="px-4 py-6">
-                <ul className="mt-6 space-y-1">
+                <ul className="mt-6 space-y-2">
                   <li>
                     <a
                       href="#"
-                      className="block rounded-lg bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700"
+                      className="block rounded-lg bg-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700"
                     >
                       Profile
                     </a>
                   </li>
 
                   <li>
-                    <a
-                      href="#"
-                      className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
+                    <Link
+                      to="/subscriptions"
+                      className="block rounded-lg px-4 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
                     >
                       Subscriptions
-                    </a>
-                  </li>
-
-                  <li>
-                    <a
-                      href="#"
-                      className="block rounded-lg px-4 py-2 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-700"
-                    >
-                      Users
-                    </a>
+                    </Link>
                   </li>
 
                   {/* <li>
@@ -215,7 +219,7 @@ const AdminDetails = () => {
                 </ul>
               </div>
             </div>
-            <div className="col-span-7 ">
+            <div className="col-span-1 lg:col-span-7 px-3">
               <div className="p-0 sm:p-7">
                 <div className="mb-8">
                   <h2 className="text-xl font-bold text-gray-800">Account</h2>
@@ -263,7 +267,7 @@ const AdminDetails = () => {
                     <div className="sm:col-span-9">
                       <button
                         type="button"
-                        onClick={handleChangePassword}
+                        onClick={openChangePasswordModal}
                         className="flex justify-start items-center gap-x-1 text-sm text-gray-800 font-medium cursor-pointer"
                       >
                         <FiLock /> Change Password
@@ -311,6 +315,13 @@ const AdminDetails = () => {
           </div>
         </div>
       </section>
+
+      {/* CHANGE PASSWORD MODAL */}
+      {showChangePasswordModal && (
+        <ChangePasswordModal
+          closeChangePasswordModal={closeChangePasswordModal}
+        />
+      )}
 
       {/* DELETE MODAL */}
       {showDeleteModal && (

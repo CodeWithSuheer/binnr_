@@ -12,9 +12,13 @@ const LgNavbar = () => {
   const [state, setState] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const { user } = useAppSelector((state) => state.auth);
+  const { user: userData }: { user: any } = useAppSelector(
+    (state) => state.auth
+  );
 
   const storedUser = localStorage.getItem("accessToken");
+  const user = localStorage.getItem("user");
+
   useEffect(() => {
     if (storedUser && storedUser.length > 0) {
       setIsLoggedIn(true);
@@ -81,8 +85,16 @@ const LgNavbar = () => {
                     );
                   })}
 
-                  {isLoggedIn && (
+                  {isLoggedIn && userData && userData?.body?.user_type === 2 && (
                     <HashLink to="/user-details" smooth>
+                      <p className="text-gray-900" onClick={closeMenu}>
+                        Profile
+                      </p>
+                    </HashLink>
+                  )}
+
+                  {isLoggedIn && userData && userData?.body?.user_type === 1 && (
+                    <HashLink to="/admin-details" smooth>
                       <p className="text-gray-900" onClick={closeMenu}>
                         Profile
                       </p>

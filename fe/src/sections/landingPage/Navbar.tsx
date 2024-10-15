@@ -19,9 +19,13 @@ const Navbar = () => {
     { title: "Pricing", path: "/#pricing" },
   ];
 
-  const { user } = useAppSelector((state) => state.auth);
+  const { user: userData }: { user: any } = useAppSelector(
+    (state) => state.auth
+  );
 
   const storedUser = localStorage.getItem("accessToken");
+  const user = localStorage.getItem("user");
+
   useEffect(() => {
     if (storedUser && storedUser.length > 0) {
       setIsLoggedIn(true);
@@ -127,19 +131,31 @@ const Navbar = () => {
                       );
                     })}
 
-                    {isLoggedIn && (
-                      <HashLink to="/user-details" smooth>
-                        <p className="text-gray-900 my-2 py-2 pl-2" onClick={closeMenu}>
-                          Profile
-                        </p>
-                      </HashLink>
-                    )}
+                    {isLoggedIn &&
+                      userData &&
+                      userData?.body?.user_type === 2 && (
+                        <HashLink to="/user-details" smooth>
+                          <p className="text-gray-900 my-2 py-2 pl-2" onClick={closeMenu}>
+                            Profile
+                          </p>
+                        </HashLink>
+                      )}
+
+                    {isLoggedIn &&
+                      userData &&
+                      userData?.body?.user_type === 1 && (
+                        <HashLink to="/admin-details" smooth>
+                          <p className="text-gray-900 my-2 py-2 pl-2" onClick={closeMenu}>
+                            Profile
+                          </p>
+                        </HashLink>
+                      )}
                   </div>
                 </div>
 
                 {/* LOGIN & LOGOUT BUTTONS */}
                 <div className="">
-                {isLoggedIn ? (
+                  {isLoggedIn ? (
                     <ul className="flex flex-col space-x-0 lg:space-x-4 lg:flex-row">
                       <li className="">
                         <button

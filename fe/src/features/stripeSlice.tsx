@@ -3,7 +3,8 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
 const createSubscriptionPlan = "/api/subscription/";
-const getAllSubscriptionPlan = "/api/subscription/";
+const getAllSubscriptionPlan = "/api/subscription/user";
+const cancelSubscriptionPlan = "/api/subscription";
 
 
 // CREATE SUBSCRIPTION ASYNC THUNK
@@ -43,13 +44,39 @@ export const getAllSubscriptionPlanAsync = createAsyncThunk(
         throw new Error("No token found. Please login again.");
       }
 
-      const response = await axios.post(getAllSubscriptionPlan, {
+      const response = await axios.get(getAllSubscriptionPlan, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      toast.success(response.data.message);
+      // toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "An error occurred.");
+      throw error;
+    }
+  }
+);
+
+// CANCEL SUBSCRIPTION ASYNC THUNK
+export const cancelSubscriptionPlanAsync = createAsyncThunk(
+  "stripe/cancel",
+  async (id:string) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.put(`${cancelSubscriptionPlan}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      // toast.success(response.data.message);
       return response.data;
     } catch (error: any) {
       toast.error(error.response?.data?.message || "An error occurred.");
@@ -88,6 +115,18 @@ const stripeSlice = createSlice({
         state.stripeResponse = action.payload?.body || null;
       })
       .addCase(createSubscriptionPlanAsync.rejected, (state) => {
+        state.stripeLoading = false;
+      })
+
+       // GET ALL SUB PLANS CASE
+       .addCase(getAllSubscriptionPlanAsync.pending, (state) => {
+        state.stripeLoading = true;
+      })
+      .addCase(getAllSubscriptionPlanAsync.fulfilled, (state, action) => {
+        state.stripeLoading = false;
+        state.allSubscriptionPlans = action.payload?.body || null;
+      })
+      .addCase(getAllSubscriptionPlanAsync.rejected, (state) => {
         state.stripeLoading = false;
       })
 

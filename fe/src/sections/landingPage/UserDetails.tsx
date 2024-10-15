@@ -45,12 +45,10 @@ const UserDetails = () => {
   }, [navigate, user]);
 
   const displayUser = user || localUser;
-  
 
   const openChangePasswordModal = () => {
     setShowChangePasswordModal(true);
   };
-
 
   const closeChangePasswordModal = () => {
     setShowChangePasswordModal(false);
@@ -208,7 +206,9 @@ const UserDetails = () => {
 
       {/* CHANGE PASSWORD MODAL */}
       {showChangePasswordModal && (
-        <ChangePasswordModal closeChangePasswordModal={closeChangePasswordModal} />
+        <ChangePasswordModal
+          closeChangePasswordModal={closeChangePasswordModal}
+        />
       )}
 
       {/* DELETE MODAL */}
@@ -293,7 +293,7 @@ const UserDetails = () => {
             id="popup-modal"
           >
             <div className="relative py-6 px-4 w-full max-w-md max-h-full">
-              <div className="relative bg-white rounded-lg shadow">
+              <div className="relative py-3 bg-white rounded-lg shadow">
                 <button
                   onClick={closeProfileModal}
                   className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
@@ -318,22 +318,9 @@ const UserDetails = () => {
                   <span className="sr-only">Close modal</span>
                 </button>
                 <div className="p-4 md:p-5 text-center">
-                  {/* <svg
-                    aria-hidden="true"
-                    className="mx-auto mb-4 text-gray-400 w-12 h-12"
-                    fill="none"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                    />
-                  </svg> */}
-
+                  <h1 className="max-w-xs sm:max-w-full mb-3 text-2xl sm:text-2xl font-semibold">
+                    Change Username
+                  </h1>
                   <div className="flex">
                     <input
                       className="mt-2 mb-5 py-3 px-2 border w-[20rem] mx-auto rounded-md"
