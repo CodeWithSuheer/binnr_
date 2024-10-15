@@ -3,6 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
 const createSubscriptionPlan = "/api/subscription/";
+const getAllSubscriptionPlan = "/api/subscription/";
 
 
 // CREATE SUBSCRIPTION ASYNC THUNK
@@ -31,15 +32,43 @@ export const createSubscriptionPlanAsync = createAsyncThunk(
   }
 );
 
+// GET ALL SUBSCRIPTION ASYNC THUNK
+export const getAllSubscriptionPlanAsync = createAsyncThunk(
+  "stripe/getAllSubscription",
+  async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("No token found. Please login again.");
+      }
+
+      const response = await axios.post(getAllSubscriptionPlan, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      toast.success(response.data.message);
+      return response.data;
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "An error occurred.");
+      throw error;
+    }
+  }
+);
+
 // INITIAL STATE
 interface PlanState {
   stripeLoading: boolean;
   stripeResponse: any;
+  allSubscriptionPlans: any;
 }
 
 const initialState: PlanState = {
   stripeLoading: false,
   stripeResponse: null,
+  allSubscriptionPlans: null,
 };
 
 const stripeSlice = createSlice({
@@ -60,7 +89,9 @@ const stripeSlice = createSlice({
       })
       .addCase(createSubscriptionPlanAsync.rejected, (state) => {
         state.stripeLoading = false;
-      });
+      })
+
+      
   },
 });
 

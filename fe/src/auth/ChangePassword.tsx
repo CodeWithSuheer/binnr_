@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { changePasswordAsync, loginuserAsync } from "../features/authSlice";
+import { useNavigate } from "react-router-dom";
+import { changePasswordAsync } from "../features/authSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 
 export interface ChangePasswordFormData {

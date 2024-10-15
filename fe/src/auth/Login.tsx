@@ -41,34 +41,27 @@ const Login = () => {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-  
+
     dispatch(loginuserAsync(formData)).then((res) => {
       console.log("res", res.payload);
-  
+
       if (res.payload.status === 200) {
-        if (
-          res.payload.body.accesstoken &&
-          res.payload.body.accesstoken.length > 0
-        ) {
-          const userType = res.payload.body.user_type;
-  
-          if (userType === 1) {
-            // If user is admin, call getUserProfileAsync and navigate to admin-details
-            // dispatch(getUserProfileAsync()).then(() => {
-              navigate("/admin-details");
-            // });
-          } else if (userType === 2) {
-            // If user is a regular user, skip getUserProfileAsync and check for selected plan
+        const userType = res.payload.body.user_type;
+
+        if (userType === 1) {
+          navigate("/admin-details");
+        } else if (userType === 2) {
+          dispatch(getUserProfileAsync()).then(() => {
             const selectedPlanId = localStorage.getItem("selectedPlanId");
-  
+
             if (selectedPlanId) {
               navigate("/checkout");
             } else {
               navigate("/user-details");
             }
-          }
+          });
         }
-  
+
         // Reset form fields
         setFormData({
           email: "",
@@ -78,7 +71,6 @@ const Login = () => {
       }
     });
   };
-  
 
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);

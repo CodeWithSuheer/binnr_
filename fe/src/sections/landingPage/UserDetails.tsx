@@ -9,6 +9,7 @@ import {
   updateProfileAsync,
 } from "../../features/authSlice";
 import { RiEdit2Fill } from "react-icons/ri";
+import ChangePasswordModal from "../../auth/ChangePasswordModal";
 
 export interface DeleteAccountFormData {
   email: string;
@@ -26,6 +27,7 @@ const UserDetails = () => {
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
 
   const [newName, setNewName] = useState("");
   const [hasChanges, setHasChanges] = useState(false);
@@ -43,13 +45,24 @@ const UserDetails = () => {
   }, [navigate, user]);
 
   const displayUser = user || localUser;
+  
 
-  const handleChangePassword = () => {
-    navigate("/change-password");
+  const openChangePasswordModal = () => {
+    setShowChangePasswordModal(true);
+  };
+
+
+  const closeChangePasswordModal = () => {
+    setShowChangePasswordModal(false);
   };
 
   const openDeleteModal = () => {
     setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    console.log("handleDeletemodal");
+    setShowDeleteModal(false);
   };
 
   const handleDeleteAccount = () => {
@@ -80,11 +93,10 @@ const UserDetails = () => {
     setShowProfileModal(false);
   };
 
-  // Handle input changes for the name field
   const handleNameChange = (e: any) => {
     const updatedName = e.target.value;
     setNewName(updatedName);
-    setHasChanges(updatedName !== displayUser?.body?.name); // Check if the name has changed
+    setHasChanges(updatedName !== displayUser?.body?.name);
   };
 
   // Handle saving the updated name
@@ -100,10 +112,6 @@ const UserDetails = () => {
         setShowProfileModal(false);
       });
     }
-  };
-
-  const closeDeleteModal = () => {
-    setShowDeleteModal(false);
   };
 
   return (
@@ -159,7 +167,7 @@ const UserDetails = () => {
                 <div className="sm:col-span-9">
                   <button
                     type="button"
-                    onClick={handleChangePassword}
+                    onClick={openChangePasswordModal}
                     className="flex justify-start items-center gap-x-1 text-sm text-gray-800 font-medium cursor-pointer"
                   >
                     <FiLock /> Change Password
@@ -197,6 +205,11 @@ const UserDetails = () => {
           </div>
         </div>
       </section>
+
+      {/* CHANGE PASSWORD MODAL */}
+      {showChangePasswordModal && (
+        <ChangePasswordModal closeChangePasswordModal={closeChangePasswordModal} />
+      )}
 
       {/* DELETE MODAL */}
       {showDeleteModal && (
@@ -272,7 +285,7 @@ const UserDetails = () => {
         </div>
       )}
 
-      {/* UPDATE MODAL */}
+      {/* UPDATE MODAL --> Name */}
       {showProfileModal && (
         <div className="fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-screen bg-gray-800 bg-opacity-50">
           <div
