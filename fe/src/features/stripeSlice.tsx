@@ -6,7 +6,6 @@ const createSubscriptionPlan = "/api/subscription/";
 const getAllSubscriptionPlan = "/api/subscription/user";
 const cancelSubscriptionPlan = "/api/subscription";
 
-
 // CREATE SUBSCRIPTION ASYNC THUNK
 export const createSubscriptionPlanAsync = createAsyncThunk(
   "stripe/subscription",
@@ -59,10 +58,14 @@ export const getAllSubscriptionPlanAsync = createAsyncThunk(
   }
 );
 
+interface CancelSubscriptionPlanPayload {
+  id: string;
+}
+
 // CANCEL SUBSCRIPTION ASYNC THUNK
 export const cancelSubscriptionPlanAsync = createAsyncThunk(
   "stripe/cancel",
-  async (id:string) => {
+  async ({ id }: CancelSubscriptionPlanPayload) => {
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -118,8 +121,8 @@ const stripeSlice = createSlice({
         state.stripeLoading = false;
       })
 
-       // GET ALL SUB PLANS CASE
-       .addCase(getAllSubscriptionPlanAsync.pending, (state) => {
+      // GET ALL SUB PLANS CASE
+      .addCase(getAllSubscriptionPlanAsync.pending, (state) => {
         state.stripeLoading = true;
       })
       .addCase(getAllSubscriptionPlanAsync.fulfilled, (state, action) => {
@@ -128,9 +131,7 @@ const stripeSlice = createSlice({
       })
       .addCase(getAllSubscriptionPlanAsync.rejected, (state) => {
         state.stripeLoading = false;
-      })
-
-      
+      });
   },
 });
 

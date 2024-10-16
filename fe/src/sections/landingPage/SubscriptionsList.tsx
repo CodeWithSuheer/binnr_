@@ -7,6 +7,8 @@ import {
 } from "../../features/stripeSlice";
 import { useEffect } from "react";
 
+
+
 const SubscriptionsList = () => {
   const dispatch = useAppDispatch();
 
@@ -17,7 +19,7 @@ const SubscriptionsList = () => {
     dispatch(getAllSubscriptionPlanAsync());
   }, [dispatch]);
 
-  const handleDelete = (id: any) => {
+  const handleDelete = (id: string) => {
     console.log("id", id);
 
     dispatch(cancelSubscriptionPlanAsync({id}));
