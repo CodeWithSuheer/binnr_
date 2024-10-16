@@ -37,13 +37,13 @@ const AdminDetails = () => {
 
   const { user } = useAppSelector((state) => state.auth);
 
-
   useEffect(() => {
     dispatch(getAllSubscriptionPlanAsync());
   }, [dispatch]);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
+
     if (!user && storedUser) {
       const parsedUser = JSON.parse(storedUser);
       setLocalUser(parsedUser);
@@ -103,7 +103,9 @@ const AdminDetails = () => {
     if (Object.keys(updatedFields).length > 0) {
       dispatch(updateProfileAsync(updatedFields)).then((res) => {
         if (res.payload.status === 200) {
-          localStorage.setItem("user", JSON.stringify(res.payload.data)); // Update local storage
+          console.log("Response --------------", res);
+
+          localStorage.setItem("user", JSON.stringify(res.payload)); // Update local storage
         }
       });
     }
@@ -254,13 +256,17 @@ const AdminDetails = () => {
                       </label>
                     </div>
                     <div className="sm:col-span-9">
-                      <input
+                      <p className="py-2 px-3 pe-11 block w-full text-sm rounded-lg">
+                        {formData.email}
+                      </p>
+
+                      {/* <input
                         className="py-2 px-3 pe-11 block w-full border border-gray-200 focus:border-gray-700 focus:outline-none shadow-sm text-sm rounded-lg"
                         id="email"
                         placeholder="Email"
                         value={formData.email}
                         onChange={handleInputChange}
-                      />
+                      /> */}
                     </div>
 
                     <div className="sm:col-span-3"></div>
