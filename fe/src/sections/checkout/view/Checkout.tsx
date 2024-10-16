@@ -24,12 +24,12 @@ const Checkout: React.FC = () => {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [email, setEmail] = useState<string>("");
+  // const [email, setEmail] = useState<string>("");
 
   // Handle email change
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-  };
+  // const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setEmail(e.target.value);
+  // };
 
   const { planData } = useAppSelector((state) => state.plan);
   const { user } = useAppSelector((state) => state.auth);
@@ -265,47 +265,9 @@ const Checkout: React.FC = () => {
             <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
           </span>
 
-          <div className="lg:col-span-3 p-4 sm:p-3">
-            <div className="grid gap-4 sm:grid-cols-1 mt-4">
-              <div>
-                <label
-                  htmlFor="UserEmail"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Email
-                </label>
-
-                <input
-                  className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
-                  placeholder="Email"
-                  type="email"
-                  required
-                  value={email}
-                  onChange={handleEmailChange}
-                />
-              </div>
-
-              {/* <div>
-                <label
-                  htmlFor="UserEmail"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Country
-                </label>
-                <select
-                  title="countries"
-                  id="countries"
-                  className="px-4 py-3.5 bg-white text-gray-800 w-full text-sm border rounded-md focus:border-[#007bff] outline-none"
-                >
-                  <option selected>Choose a country</option>
-                  <option value="US">United States</option>
-                  <option value="CA">Canada</option>
-                  <option value="FR">France</option>
-                  <option value="DE">Germany</option>
-                </select>
-              </div> */}
-            </div>
-            <div className="bg-[#ffffff] py-4 my-5 rounded-lg border-[#e4e4e4] border-[.1rem] border-solid">
+          <div className="lg:col-span-3 p-4 sm:px-3 py-0">
+            
+            <div className="bg-[#ffffff] py-4 my-0 rounded-lg border-[#e4e4e4] border-[.1rem] border-solid">
               <CardInput />
             </div>
 

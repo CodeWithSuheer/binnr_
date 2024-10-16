@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
 const createSubscriptionPlan = "/api/subscription/";
-const getAllSubscriptionPlan = "/api/subscription/user";
+const getAllSubscriptionPlan = "/api/subscription";
 const cancelSubscriptionPlan = "/api/subscription";
 
 // CREATE SUBSCRIPTION ASYNC THUNK
@@ -58,14 +58,17 @@ export const getAllSubscriptionPlanAsync = createAsyncThunk(
   }
 );
 
-interface CancelSubscriptionPlanPayload {
-  id: string;
-}
+// interface CancelSubscriptionPlanPayload {
+//   id: string;
+// }
 
 // CANCEL SUBSCRIPTION ASYNC THUNK
 export const cancelSubscriptionPlanAsync = createAsyncThunk(
   "stripe/cancel",
-  async ({ id }: CancelSubscriptionPlanPayload) => {
+  async ({ id }: any) => {
+    
+    console.log("id", id);
+    
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -73,13 +76,15 @@ export const cancelSubscriptionPlanAsync = createAsyncThunk(
         throw new Error("No token found. Please login again.");
       }
 
-      const response = await axios.put(`${cancelSubscriptionPlan}/${id}`, {
+      const response = await axios.put(`${cancelSubscriptionPlan}/${id}`,{}, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
 
-      // toast.success(response.data.message);
+      toast.success(response.data.message);
+      console.log("response.data", response.data);
+
       return response.data;
     } catch (error: any) {
       toast.error(error.response?.data?.message || "An error occurred.");
@@ -98,7 +103,7 @@ interface PlanState {
 const initialState: PlanState = {
   stripeLoading: false,
   stripeResponse: null,
-  allSubscriptionPlans: null,
+  allSubscriptionPlans: [],
 };
 
 const stripeSlice = createSlice({

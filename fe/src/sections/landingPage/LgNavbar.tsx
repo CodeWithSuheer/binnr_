@@ -4,28 +4,28 @@ import { Link, useNavigate } from "react-router-dom";
 import { HashLink } from "react-router-hash-link";
 import "./LandingPage.css";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { reset } from "../../features/authSlice";
+import { reset, setUser } from "../../features/authSlice";
 
 const LgNavbar = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [state, setState] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Get user from Redux store
   const { user: userData }: { user: any } = useAppSelector(
     (state) => state.auth
   );
 
-  const storedUser = localStorage.getItem("accessToken");
-  const user = localStorage.getItem("user");
-
   useEffect(() => {
-    if (storedUser && storedUser.length > 0) {
-      setIsLoggedIn(true);
-    } else {
-      setIsLoggedIn(false);
+    // Load user and token from localStorage on component mount
+    const storedUser = localStorage.getItem("user");
+    const token = localStorage.getItem("accessToken");
+
+    if (storedUser && token) {
+      // If user and token exist in localStorage, update Redux state
+      dispatch(setUser(JSON.parse(storedUser)));
     }
-  }, [user, storedUser]);
+  }, [dispatch]);
 
   const navigation = [
     { title: "Why", path: "/#why" },
@@ -34,13 +34,9 @@ const LgNavbar = () => {
   ];
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("userProfile");
-    localStorage.removeItem("selectedPlanId");
-    localStorage.removeItem("email");
+    // Clear localStorage and reset Redux state on logout
+    localStorage.clear();
     dispatch(reset());
-
     navigate("/");
     closeMenu();
   };
@@ -85,7 +81,8 @@ const LgNavbar = () => {
                     );
                   })}
 
-                  {isLoggedIn && userData && userData?.body?.user_type === 2 && (
+                  {/* Profile button based on user type */}
+                  {userData && userData?.body?.user_type === 2 && (
                     <HashLink to="/user-details" smooth>
                       <p className="text-gray-900" onClick={closeMenu}>
                         Profile
@@ -93,7 +90,7 @@ const LgNavbar = () => {
                     </HashLink>
                   )}
 
-                  {isLoggedIn && userData && userData?.body?.user_type === 1 && (
+                  {userData && userData?.body?.user_type === 1 && (
                     <HashLink to="/admin-details" smooth>
                       <p className="text-gray-900" onClick={closeMenu}>
                         Profile
@@ -105,7 +102,7 @@ const LgNavbar = () => {
 
               {/* Login/Logout Section */}
               <div className="pr-6 buttons flex justify-end items-center">
-                {isLoggedIn ? (
+                {userData ? (
                   <ul className="flex flex-col-reverse space-x-0 lg:space-x-4 lg:flex-row">
                     <li className="mt-4 lg:mt-0">
                       <button

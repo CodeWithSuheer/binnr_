@@ -35,13 +35,21 @@ const ChangePasswordModal = ({
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     console.log("formData", formData);
+  
     dispatch(changePasswordAsync(formData)).then((res) => {
-
-      // console.log("res", res);
-
+      console.log("res", res);
+  
       if (res.payload.status === 200) {
-        navigate("/user-details");
+        // Check if the user is an admin or a regular user
+        if (user?.body?.user_type === 1) {
+          navigate("/admin-details");
+        } else {
+          navigate("/user-details");
+        }
+  
         closeChangePasswordModal();
+  
+        // Reset form data after successful password change
         setFormData({
           old_password: "",
           newpassword: "",
@@ -50,6 +58,7 @@ const ChangePasswordModal = ({
       }
     });
   };
+  
 
   const togglePasswordVisibility = (): void => {
     setShowPassword(!showPassword);

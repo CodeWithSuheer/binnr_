@@ -7,8 +7,6 @@ import {
 } from "../../features/stripeSlice";
 import { useEffect } from "react";
 
-
-
 const SubscriptionsList = () => {
   const dispatch = useAppDispatch();
 
@@ -20,9 +18,12 @@ const SubscriptionsList = () => {
   }, [dispatch]);
 
   const handleDelete = (id: string) => {
-    console.log("id", id);
-
-    dispatch(cancelSubscriptionPlanAsync({id}));
+    dispatch(cancelSubscriptionPlanAsync({ id })).then((res) => {
+      console.log("res", res);
+      if (res.payload.status === 200) {
+        dispatch(getAllSubscriptionPlanAsync());
+      }
+    });
   };
 
   return (
@@ -83,14 +84,26 @@ const SubscriptionsList = () => {
                 <td className="px-6 py-4 whitespace-nowrap capitalize">
                   {data?.status}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap capitalize">
-                  <button
-                    onClick={() => handleDelete(data?.user?._id)}
-                    className="text-white bg-red-600 hover:bg-red-700 rounded-md px-4 py-2"
-                  >
-                    Cancel
-                  </button>
-                </td>
+
+                {data?.status === "canceled" ? (
+                  <td className="px-6 py-4 whitespace-nowrap capitalize">
+                    <button
+                      disabled
+                      className="text-white bg-gray-600 rounded-md px-4 py-2"
+                    >
+                      Canceled
+                    </button>
+                  </td>
+                ) : (
+                  <td className="px-6 py-4 whitespace-nowrap capitalize">
+                    <button
+                      onClick={() => handleDelete(data?._id)}
+                      className="text-white bg-red-600 hover:bg-red-700 rounded-md px-4 py-2"
+                    >
+                      {data?.status === "canceled" ? "canceled" : "Cancel"}
+                    </button>
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
