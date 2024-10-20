@@ -1,5 +1,6 @@
 import {
   useEffect,
+  // useRef,
   //  useRef,
   useState,
 } from "react";
@@ -18,6 +19,8 @@ const Checkout: React.FC = () => {
 
   const [localUser, setLocalUser] = useState(null);
 
+  const { planData } = useAppSelector((state) => state.plan);
+
   // const tabsRef = useRef<(HTMLElement | null)[]>([]);
   // const [activeTabIndex, setActiveTabIndex] = useState<number | null>(0);
   // const [tabUnderlineWidth, setTabUnderlineWidth] = useState(0);
@@ -32,7 +35,6 @@ const Checkout: React.FC = () => {
   //   setEmail(e.target.value);
   // };
 
-  const { planData } = useAppSelector((state) => state.plan);
 
   console.log("planData", planData);
 
@@ -174,31 +176,30 @@ const Checkout: React.FC = () => {
   return (
     <div className="flex items-center justify-center min-h-screen px-2">
       <div className="pt-6 lg:pt-3 w-full sm:max-w-7xl mx-auto rounded-md">
-        {/* <div className="mt-[5rem] md:mt-[5rem] lg:mt-[15rem] xl:mt-[11rem] ml-4 sm:ml-8 flew-row w-max px-3 sm:px-6 relative flex h-[3.5rem] rounded-full border bg-[#F1F1F1] shadow-lg border-[#c2c2c2] backdrop-blur-sm">
-          <span
+        <div className="my-[2rem] md:mt-[5rem] lg:mt-[15rem] xl:mt-[11rem] flew-row w-max px-3 sm:px-6 relative flex h-[3.5rem] rounded-full border bg-[#F1F1F1] shadow-lg border-[#c2c2c2] backdrop-blur-sm">
+          {/* <span
             className="absolute bottom-0 top-0 -z-10 flex overflow-hidden rounded-full py-2 transition-all duration-300"
             style={{ left: tabUnderlineLeft, width: tabUnderlineWidth }}
           >
             <span className="h-full w-full bg-gradient-to-b from-[#383838]  via-[#141414] to-[#141414] text-white font-medium px-4 py-2 rounded-2xl transition duration-300 hover:opacity-80" />
-          </span>
+          </span> */}
           {allTabs.map((tab, index) => {
-            const isActive = activeTabIndex === index;
-
+            const isActive = planData?.interval === tab.id;
             return (
               <button
                 type="button"
                 key={index}
-                ref={(el) => (tabsRef.current[index] = el)}
+                // ref={(el) => (tabsRef.current[index] = el)}
                 className={`${
-                  isActive ? `text-[#ffffff] font-medium` : ``
+                  isActive ? `w-full bg-gradient-to-b from-[#383838]  via-[#141414] to-[#141414] text-white font-medium px-4 py-2 rounded-2xl transition duration-300 hover:opacity-80` : ``
                 } my-auto cursor-pointer select-none rounded-full font-medium px-4 text-center text-[#858585]`}
-                onClick={() => setActiveTabIndex(index)}
+                // onClick={() => setActiveTabIndex(index)}
               >
                 {tab.name}
               </button>
             );
           })}
-        </div> */}
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 xl:gap-6">
           <div
@@ -208,7 +209,6 @@ const Checkout: React.FC = () => {
             <div className="flex justify-between items-center">
               <div>
                 <p className="text-2xl font-semibold">{planData?.name}</p>
-                <p className="font-light text-gray-900">{planData?.price}</p>
               </div>
               <Icon width={30} icon="pepicons-pop:checkmark-filled-circle" />
             </div>
@@ -249,51 +249,51 @@ const Checkout: React.FC = () => {
                   <p>Loading subscription plan details...</p>
                 )}
               </div>
-              {/* <div className="flex flex-row justify-between items-center ">
-              <p className="text-[1rem] font-lighter text-black">
+              <div className="flex flex-row justify-between items-center ">
+              <p className="text-[1rem] font-lighter">
                 {"Pro Plan"}
               </p>
               <div className="">
                 <p className="font-lighter  text-sm ">{"14 Days Free"}</p>
                 <p className="text-sm font-lighter mt-1">{"$10/month after"}</p>
               </div>
-            </div> */}
-              {/* <span className="relative flex justify-center my-5">
+            </div>
+              <span className="relative flex justify-center my-5">
               <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
               <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
-            </span> */}
-              {/* <div className="flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter text-black">
+            </span>
+              <div className="flex flex-row justify-between items-start ">
+              <p className="text-[1rem] font-lighter ">
                 {"Subtotal"}
               </p>
 
               <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
             </div>
-            <button
+            {/* <button
               className="mt-3 w-max font-light rounded-lg bg-[#252525] p-5 py-1 maxw text-sm shadow-gray-600 text-gray-100 transition"
               type="submit"
             >
               Add Promotion code
-            </button>
+            </button> */}
             <div className="mt-2 flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter text-black">{"Tax"}</p>
+              <p className="text-[1rem] font-lighter ">{"Tax"}</p>
 
               <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
-            </div> */}
-              {/* <div className="mt-2 flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter text-black">
+            </div>
+              <div className="mt-2 flex flex-row justify-between items-start ">
+              <p className="text-[1rem] font-lighter ">
                 {"Total after trial"}
               </p>
 
               <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
-            </div> */}{" "}
-              {/* <div className="mt-2 flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter text-black">
+            </div>{" "}
+              <div className="mt-2 flex flex-row justify-between items-start ">
+              <p className="text-[1rem] font-lighter ">
                 {"Total due today"}
               </p>
 
               <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
-            </div> */}
+            </div>
             </div>
 
             <span className="relative flex justify-center my-2">
@@ -332,17 +332,17 @@ const Checkout: React.FC = () => {
 
 export default Checkout;
 
-// let allTabs = [
-//   {
-//     id: "weekly",
-//     name: "Weekly",
-//   },
-//   {
-//     id: "monthly",
-//     name: "Monthly",
-//   },
-//   {
-//     id: "yearly",
-//     name: "Yearly",
-//   },
-// ];
+let allTabs = [
+  {
+    id: "week",
+    name: "Weekly",
+  },
+  {
+    id: "month",
+    name: "Monthly",
+  },
+  {
+    id: "year",
+    name: "Yearly",
+  },
+];
