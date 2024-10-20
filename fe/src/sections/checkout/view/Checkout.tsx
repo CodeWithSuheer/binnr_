@@ -3,6 +3,7 @@ import {
   //  useRef,
   useState,
 } from "react";
+import { Icon } from "@iconify/react/dist/iconify.js";
 
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import CardInput from "../../checkout/CardInput";
@@ -32,6 +33,9 @@ const Checkout: React.FC = () => {
   // };
 
   const { planData } = useAppSelector((state) => state.plan);
+
+  console.log("planData", planData);
+
   const { user } = useAppSelector((state) => state.auth);
 
   useEffect(() => {
@@ -169,7 +173,7 @@ const Checkout: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-2">
-      <div className="pt-6 lg:pt-3 w-full sm:max-w-4xl mx-auto rounded-md">
+      <div className="pt-6 lg:pt-3 w-full sm:max-w-7xl mx-auto rounded-md">
         {/* <div className="mt-[5rem] md:mt-[5rem] lg:mt-[15rem] xl:mt-[11rem] ml-4 sm:ml-8 flew-row w-max px-3 sm:px-6 relative flex h-[3.5rem] rounded-full border bg-[#F1F1F1] shadow-lg border-[#c2c2c2] backdrop-blur-sm">
           <span
             className="absolute bottom-0 top-0 -z-10 flex overflow-hidden rounded-full py-2 transition-all duration-300"
@@ -196,24 +200,56 @@ const Checkout: React.FC = () => {
           })}
         </div> */}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-3 text-gray-100 bg-gradient-to-b from-[#2C5364] via-[#203A43] to-[#0F2027] flex flex-col h-[100%]  rounded-xl p-4 sm:px-5 sm:py-8">
-            <div className="flex flex-col justify-center items-start">
-              {planData ? (
-                <>
-                  <p className="font-extrabold my-2 text-3xl sm:text-4xl text-gray-100">
-                    {planData.name}
-                  </p>
-                  <p className="text-sm font-semibold uppercase">
-                    {planData.currency}
-                    {planData.price}/{planData.interval}
-                  </p>
-                </>
-              ) : (
-                <p>Loading subscription plan details...</p>
-              )}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 xl:gap-6">
+          <div
+            key={planData?._id}
+            className="text-gray-900 flex flex-col border-[1px] h-[100%] bg-[#f5f5f5] shadow-lg rounded-xl p-8 border-[#c7c7c7]"
+          >
+            <div className="flex justify-between items-center">
+              <div>
+                <p className="text-2xl font-semibold">{planData?.name}</p>
+                <p className="font-light text-gray-900">{planData?.price}</p>
+              </div>
+              <Icon width={30} icon="pepicons-pop:checkmark-filled-circle" />
             </div>
-            {/* <div className="flex flex-row justify-between items-center ">
+
+            <h1 className="text-4xl xl:text-5xl mt-6 font-bold h-8 lg:h-14">
+              ${planData?.price}
+              <span className="font-light text-[.9rem] text-gray-900 ml-2">
+                /{planData?.interval}
+              </span>
+            </h1>
+
+            <ul className="mt-7 space-y-2.5 text-sm flex-grow">
+              <li className="flex gap-x-2">
+                <Icon icon="charm:tick" width={20} color="#000" />
+                <span className="text-gray-900">Priority support</span>
+              </li>
+              <li className="flex gap-x-2">
+                <Icon icon="charm:tick" width={20} color="#000" />
+                <span className="text-gray-900">Exclusive deals</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="stripe lg:col-span-3">
+            <div className="mx-0 sm:mx-2 text-gray-100 bg-gradient-to-b from-[#2C5364] via-[#203A43] to-[#0F2027] flex flex-col rounded-xl p-4 sm:px-5 sm:py-8">
+              <div className="flex flex-col justify-center items-start">
+                {planData ? (
+                  <>
+                    <p className="font-extrabold my-2 text-3xl sm:text-4xl text-gray-100">
+                      {planData.name}
+                    </p>
+                    <p className="text-sm font-semibold uppercase">
+                      {planData.currency === "usd" ? "$" : ""}
+                      {planData.price} / {planData.interval}
+                    </p>
+                  </>
+                ) : (
+                  <p>Loading subscription plan details...</p>
+                )}
+              </div>
+              {/* <div className="flex flex-row justify-between items-center ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Pro Plan"}
               </p>
@@ -222,11 +258,11 @@ const Checkout: React.FC = () => {
                 <p className="text-sm font-lighter mt-1">{"$10/month after"}</p>
               </div>
             </div> */}
-            {/* <span className="relative flex justify-center my-5">
+              {/* <span className="relative flex justify-center my-5">
               <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
               <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
             </span> */}
-            {/* <div className="flex flex-row justify-between items-start ">
+              {/* <div className="flex flex-row justify-between items-start ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Subtotal"}
               </p>
@@ -244,49 +280,49 @@ const Checkout: React.FC = () => {
 
               <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
             </div> */}
-            {/* <div className="mt-2 flex flex-row justify-between items-start ">
+              {/* <div className="mt-2 flex flex-row justify-between items-start ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Total after trial"}
               </p>
 
               <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
             </div> */}{" "}
-            {/* <div className="mt-2 flex flex-row justify-between items-start ">
+              {/* <div className="mt-2 flex flex-row justify-between items-start ">
               <p className="text-[1rem] font-lighter text-black">
                 {"Total due today"}
               </p>
 
               <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
             </div> */}
-          </div>
-
-          <span className="relative flex justify-center my-2 lg:col-span-3">
-            <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
-            <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
-          </span>
-
-          <div className="lg:col-span-3 p-4 sm:px-3 py-0">
-            
-            <div className="bg-[#ffffff] py-4 my-0 rounded-lg border-[#e4e4e4] border-[.1rem] border-solid">
-              <CardInput />
             </div>
 
-            {isLoading ? (
-              <button
-                className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800 cursor-not-allowed"
-                type="button"
-              >
-                Loading
-              </button>
-            ) : (
-              <button
-                className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800"
-                type="submit"
-                onClick={handleSubmitSub}
-              >
-                Subscribe
-              </button>
-            )}
+            <span className="relative flex justify-center my-2">
+              <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
+              <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
+            </span>
+
+            <div className="mx-0 sm:mx-2 py-0 sm:py-2">
+              <div className="bg-[#ffffff] py-4 my-0 rounded-lg border-[#e4e4e4] border-[.1rem] border-solid">
+                <CardInput />
+              </div>
+
+              {isLoading ? (
+                <button
+                  className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800 cursor-not-allowed"
+                  type="button"
+                >
+                  Loading
+                </button>
+              ) : (
+                <button
+                  className="mt-6 w-full font-medium rounded-lg bg-[#252525] p-2.5 text-[1rem] shadow-gray-600 text-gray-100 transition hover:bg-gray-800"
+                  type="submit"
+                  onClick={handleSubmitSub}
+                >
+                  Subscribe
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

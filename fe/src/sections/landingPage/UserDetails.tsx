@@ -161,6 +161,21 @@ const UserDetails = () => {
                   </span>
                 </div>
 
+                {/* ADDRESS */}
+                <div className="sm:col-span-3 flex items-center">
+                  <label
+                    className="inline-block text-sm text-gray-800"
+                    htmlFor="af-account-email"
+                  >
+                    Address
+                  </label>
+                </div>
+                <div className="sm:col-span-9">
+                  <span className="text-sm text-gray-800">
+                  Building # {displayUser?.body?.building}, Floor # {displayUser?.body?.floor}, Room # {displayUser?.body?.room_number}
+                  </span>
+                </div>
+
                 <div className="sm:col-span-3"></div>
                 <div className="sm:col-span-9">
                   <button

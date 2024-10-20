@@ -32,6 +32,9 @@ interface User {
     createdAt: string;
     email: string;
     image: string;
+    building: string;
+    floor: string;
+    room_number: string;
     is_active: boolean;
     is_approved: string;
     is_deleted: boolean;
