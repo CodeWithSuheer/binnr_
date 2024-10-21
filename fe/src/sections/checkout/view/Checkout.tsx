@@ -35,7 +35,6 @@ const Checkout: React.FC = () => {
   //   setEmail(e.target.value);
   // };
 
-
   console.log("planData", planData);
 
   const { user } = useAppSelector((state) => state.auth);
@@ -191,7 +190,9 @@ const Checkout: React.FC = () => {
                 key={index}
                 // ref={(el) => (tabsRef.current[index] = el)}
                 className={`${
-                  isActive ? `w-full bg-gradient-to-b from-[#383838]  via-[#141414] to-[#141414] text-white font-medium px-4 py-2 rounded-2xl transition duration-300 hover:opacity-80` : ``
+                  isActive
+                    ? `w-full bg-gradient-to-b from-[#383838]  via-[#141414] to-[#141414] text-white font-medium px-4 py-2 rounded-2xl transition duration-300 hover:opacity-80`
+                    : ``
                 } my-auto cursor-pointer select-none rounded-full font-medium px-4 text-center text-[#858585]`}
                 // onClick={() => setActiveTabIndex(index)}
               >
@@ -233,11 +234,11 @@ const Checkout: React.FC = () => {
           </div>
 
           <div className="stripe lg:col-span-3">
-            <div className="mx-0 sm:mx-2 text-gray-100 bg-gradient-to-b from-[#2C5364] via-[#203A43] to-[#0F2027] flex flex-col rounded-xl p-4 sm:px-5 sm:py-8">
+            <div className="mx-0 sm:mx-2 border-[#c7c7c7] border-[.1rem] text-[#111827] bg-gradient-to-b from-[#f5f5f5] via-[#f5f5f5] to-[#dadada] flex flex-col rounded-xl p-4 sm:px-5 sm:py-8">
               <div className="flex flex-col justify-center items-start">
                 {planData ? (
                   <>
-                    <p className="font-extrabold my-2 text-3xl sm:text-4xl text-gray-100">
+                    <p className="font-extrabold my-2 text-3xl sm:text-4xl text-[#111827]">
                       {planData.name}
                     </p>
                     <p className="text-sm font-semibold uppercase">
@@ -250,56 +251,48 @@ const Checkout: React.FC = () => {
                 )}
               </div>
               <div className="flex flex-row justify-between items-center ">
-              <p className="text-[1rem] font-lighter">
-                {"Pro Plan"}
-              </p>
-              <div className="">
-                <p className="font-lighter  text-sm ">{"14 Days Free"}</p>
-                <p className="text-sm font-lighter mt-1">{"$10/month after"}</p>
+                <p className="text-[1rem] font-lighter">{"Pro Plan"}</p>
+                <div className="">
+                  <p className="font-lighter  text-sm ">{"14 Days Free"}</p>
+                  <p className="text-sm font-lighter mt-1">
+                    {"$10/month after"}
+                  </p>
+                </div>
               </div>
-            </div>
               <span className="relative flex justify-center my-5">
-              <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
-              <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
-            </span>
+                <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
+                <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
+              </span>
               <div className="flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter ">
-                {"Subtotal"}
-              </p>
+                <p className="text-[1rem] font-lighter ">{"Subtotal"}</p>
 
-              <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
-            </div>
-            {/* <button
+                <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
+              </div>
+              {/* <button
               className="mt-3 w-max font-light rounded-lg bg-[#252525] p-5 py-1 maxw text-sm shadow-gray-600 text-gray-100 transition"
               type="submit"
             >
               Add Promotion code
             </button> */}
-            <div className="mt-2 flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter ">{"Tax"}</p>
-
-              <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
-            </div>
               <div className="mt-2 flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter ">
-                {"Total after trial"}
-              </p>
+                <p className="text-[1rem] font-lighter ">{"Tax"}</p>
 
-              <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
-            </div>{" "}
+                <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
+              </div>
               <div className="mt-2 flex flex-row justify-between items-start ">
-              <p className="text-[1rem] font-lighter ">
-                {"Total due today"}
-              </p>
+                <p className="text-[1rem] font-lighter ">
+                  {"Total after trial"}
+                </p>
 
-              <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
-            </div>
+                <p className="text-sm font-lighter mt-1">{"$10.00"}</p>
+              </div>{" "}
+              <div className="mt-2 flex flex-row justify-between items-start ">
+                <p className="text-[1rem] font-lighter ">{"Total due today"}</p>
+
+                <p className="text-sm font-lighter mt-1">{"$0.00"}</p>
+              </div>
             </div>
 
-            <span className="relative flex justify-center my-2">
-              <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-transparent bg-gradient-to-r from-transparent via-gray-500 to-transparent opacity-75"></div>
-              <span className="text-sm relative z-10 text-[#858585] bg-[#f5f5f5] px-2"></span>
-            </span>
 
             <div className="mx-0 sm:mx-2 py-0 sm:py-2">
               <div className="bg-[#ffffff] py-4 my-0 rounded-lg border-[#e4e4e4] border-[.1rem] border-solid">
